@@ -39,12 +39,10 @@ def webhook():
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
-
-                    send_message(sender_id, "I hear you!")
                     
-                    for x in range(5):
-                        send_message(sender_id, "roger that!")
-
+                    for event_info in get_free_food_events():
+                        send_message(sender_id, event_info)
+                    
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
 
@@ -55,6 +53,10 @@ def webhook():
                     pass
 
     return "ok", 200
+
+
+def get_free_food_events():
+    free_food_events=["event1", "event2", "event3", "event4"]
 
 
 def send_message(recipient_id, message_text):
