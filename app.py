@@ -57,6 +57,7 @@ def webhook():
 
 def get_free_food_events():
     free_food_events=["event1", "event2", "event3", "event4"]
+    return free_food_events
 
 
 def send_message(recipient_id, message_text):
