@@ -3,6 +3,8 @@ import sys
 import json
 from datetime import datetime
 
+# from getdata import get_free_food_events
+
 import requests
 from flask import Flask, request
 
@@ -56,7 +58,7 @@ def webhook():
 
 
 def get_free_food_events():
-    free_food_events=["event1", "event2", "event3", "event4"]
+    free_food_events=["yo", "how", "event3", "event4"]
     return free_food_events
 
 
