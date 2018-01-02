@@ -4,6 +4,7 @@ import json
 from datetime import datetime
 
 from getdata import get_free_food_events
+from getdata import get_sample_events
 
 import requests
 from flask import Flask, request
@@ -43,7 +44,8 @@ def webhook():
                     message_text = messaging_event["message"]["text"]  # the message's text
                     
                     #expect: send info of free food events to users, info from getdata.py
-                    info = get_free_food_events()
+                    send_message(sender_id, "getting info")
+                    info = get_sample_events()
                     send_message(sender_id, info)
                     # for event_info in get_free_food_events():
                         

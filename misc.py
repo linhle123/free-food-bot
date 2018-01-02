@@ -1,3 +1,4 @@
+from getdata import get_free_food_events
 
-def say_hi():
-    print("sup bitch")
+info = get_free_food_events()
+print(info)
