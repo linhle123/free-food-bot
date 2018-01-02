@@ -45,8 +45,8 @@ def webhook():
                     
                     #expect: send info of free food events to users, info from getdata.py
                     send_message(sender_id, "getting info")
-                    info = get_sample_events()
-                    send_message(sender_id, info)
+                    # info = get_sample_events()
+                    # send_message(sender_id, info)
                     # for event_info in get_free_food_events():
                         
                 if messaging_event.get("delivery"):  # delivery confirmation
