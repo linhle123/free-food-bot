@@ -3,7 +3,7 @@ import sys
 import json
 from datetime import datetime
 
-# from getdata import get_free_food_events
+from getdata import get_free_food_events
 
 import requests
 from flask import Flask, request
@@ -42,9 +42,11 @@ def webhook():
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
                     
-                    for event_info in get_free_food_events():
-                        send_message(sender_id, event_info)
-                    
+                    #expect: send info of free food events to users, info from getdata.py
+                    info = get_free_food_events()
+                    send_message(sender_id, info)
+                    # for event_info in get_free_food_events():
+                        
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
 
@@ -57,9 +59,9 @@ def webhook():
     return "ok", 200
 
 
-def get_free_food_events():
-    free_food_events=["yo", "how", "event3", "event4"]
-    return free_food_events
+# def get_free_food_events():
+#     free_food_events=["yo", "how", "event3", "event4"]
+#     return free_food_events
 
 
 def send_message(recipient_id, message_text):

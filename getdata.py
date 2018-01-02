@@ -7,7 +7,9 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 
 def get_free_food_events():
-    driver = webdriver.PhantomJS(executable_path='/home/linhle/phantomjs-2.1.1-linux-x86_64/bin/phantomjs')
+    #this line is for heroku deployment, for local use, specify path to phantomjs
+    driver = webdriver.PhantomJS()
+    # (executable_path='/home/linhle/phantomjs-2.1.1-linux-x86_64/bin/phantomjs')
     # set browser size to be big, otherwise some elements get hidden by responsive design
     driver.set_window_size(1124, 850) 
     driver.get("https://anchorlink.vanderbilt.edu/events")
