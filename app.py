@@ -45,11 +45,13 @@ def webhook():
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
                     
-
-                    today = datetime.datetime.now()
-                    today_info = "today is " + today.strftime('%m/%d/%Y')
+                    #make up a day
+                    today = datetime.date(2018, 1, 12)
+                    # today = datetime.datetime.now()
+                    today_info = "Assume today is " + today.strftime('%m/%d/%Y')
                     send_message(sender_id, today_info)
-                    
+                    send_message(sender_id, "free-food events tomorrow are")
+                                        
                     events_tomorrow = get_events_tomorrow(get_free_food_events(), today)
                     if events_tomorrow:
                         for event in events_tomorrow:#add indentation here
