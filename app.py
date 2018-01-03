@@ -1,7 +1,8 @@
 import os
 import sys
 import json
-from datetime import datetime
+# from datetime import datetime
+import datetime
 
 # from getdata import get_free_food_events
 # from misc import misc_function
@@ -44,9 +45,12 @@ def webhook():
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
                     
-                    for event in get_free_food_events():
+                    #make up some date to test bot
+                    today = datetime.date(2018, 1, 12)
+                    free_food_events_tomorrow = get_events_tomorrow(get_free_food_events(), today)
+                    for event in free_food_events_tomorrow:
                         event_info = "{}\nTime: {}\nLocation: {}\nCategory: {}\n".format(
-                                    event[0],event[1],event[2],event[3])    
+                                    event[0],event[1],event[2],event[3])
                         send_message(sender_id, event_info)
                     
                 if messaging_event.get("delivery"):  # delivery confirmation
@@ -59,6 +63,15 @@ def webhook():
                     pass
 
     return "ok", 200
+
+
+def get_events_tomorrow(events, today):
+    events_tomorrow = []
+    for event in events:
+        #this can be improved
+        if event[1].day == (today + datetime.timedelta(days=1)).day:
+            events_tomorrow.append(event)
+    return events_tomorrow
 
 
 def get_free_food_events():
@@ -95,7 +108,7 @@ def log(msg, *args, **kwargs):  # simple wrapper for logging to stdout on heroku
             msg = json.dumps(msg)
         else:
             msg = unicode(msg).format(*args, **kwargs)
-        print u"{}: {}".format(datetime.now(), msg)
+        print u"{}: {}".format(datetime.datetime.now(), msg)
     except UnicodeEncodeError:
         pass  # squash logging errors in case of non-ascii text
     sys.stdout.flush()
