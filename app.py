@@ -9,20 +9,6 @@ from datetime import datetime
 import requests
 from flask import Flask, request
 
-import os
-from urllib import parse
-import psycopg2
-
-parse.uses_netloc.append("postgres")
-url = parse.urlparse(os.environ["DATABASE_URL"])
-
-conn = psycopg2.connect(
-    database=url.path[1:],
-    user=url.username,
-    password=url.password,
-    host=url.hostname,
-    port=url.port
-)
 
 app = Flask(__name__)
 
