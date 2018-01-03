@@ -1,11 +1,11 @@
 # from urllib.request import urlopen
 # from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-import time
+# from selenium import webdriver
+# from selenium.webdriver.chrome.options import Options
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as EC
+# import time
 
 def get_sample_events():
     return "sample event yo"
@@ -47,8 +47,8 @@ def get_free_food_events():
             #click to filter for free food
             driver.find_element_by_xpath("//label[contains(text(), 'Free Food')]").click()
             time.sleep(3) #wait for free food filter to take effect, this is stupid solution tho
-            print(driver.find_element_by_id("event-discovery-list").text)
-            # return driver.find_element_by_id("event-discovery-list").text
+            # print(driver.find_element_by_id("event-discovery-list").text)
+            return driver.find_element_by_id("event-discovery-list").text
             driver.close()
 
 # get_free_food_events()
