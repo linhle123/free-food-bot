@@ -52,9 +52,9 @@ def webhook():
                     
                     events_tomorrow = get_events_tomorrow(get_free_food_events(), today)
                     if events_tomorrow:
-                        for event in events_tomorrow:
-                        event_info = "{}\nTime: {}\nLocation: {}\nCategory: {}\n".format(event[0],event[1],event[2],event[3])
-                        send_message(sender_id, event_info)
+                        for event in events_tomorrow:#add indentation here
+                            event_info = "{}\nTime: {}\nLocation: {}\nCategory: {}\n".format(event[0],event[1],event[2],event[3])
+                            send_message(sender_id, event_info)
                     else:
                         send_message(sender_id, "there are no events tomorrow")
 
