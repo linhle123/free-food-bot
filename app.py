@@ -45,13 +45,26 @@ def webhook():
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
                     
-                    #make up some date to test bot
-                    today = datetime.date(2018, 1, 12)
-                    free_food_events_tomorrow = get_events_tomorrow(get_free_food_events(), today)
-                    for event in free_food_events_tomorrow:
-                        event_info = "{}\nTime: {}\nLocation: {}\nCategory: {}\n".format(
-                                    event[0],event[1],event[2],event[3])
+
+                    today = datetime.datetime.now()
+                    today_info = "today is " + today.strftime('%m/%d/%Y')
+                    send_message(sender_id, today_info)
+                    
+                    events_tomorrow = get_events_tomorrow(get_free_food_events(), today)
+                    if events_tomorrow:
+                        for event in events_tomorrow:
+                        event_info = "{}\nTime: {}\nLocation: {}\nCategory: {}\n".format(event[0],event[1],event[2],event[3])
                         send_message(sender_id, event_info)
+                    else:
+                        send_message(sender_id, "there are no events tomorrow")
+
+                    #make up some date to test bot
+                    # today = datetime.date(2018, 1, 12)
+                    # free_food_events_tomorrow = get_events_tomorrow(get_free_food_events(), today)
+                    # for event in free_food_events_tomorrow:
+                    #     event_info = "{}\nTime: {}\nLocation: {}\nCategory: {}\n".format(
+                    #                 event[0],event[1],event[2],event[3])
+                    #     send_message(sender_id, event_info)
                     
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass

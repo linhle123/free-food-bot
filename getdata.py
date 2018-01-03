@@ -99,11 +99,17 @@ for event in free_food_events:
 
 # today = datetime.time(1,2,3)
 today = datetime.date(2018, 1, 12)
-events_tomorrow = get_events_tomorrow(free_food_events, today)
-for event in events_tomorrow:
-    event_info = "{}\nTime: {}\nLocation: {}\nCategory: {}\n".format(
-                event[0],event[1],event[2],event[3])
-    print(event_info)
+tempday = datetime.datetime.now()
+today_info = "today is " + tempday.strftime('%m/%d/%Y')
+print(today_info)
+events_tomorrow = get_events_tomorrow(free_food_events, tempday)
+if events_tomorrow:
+    for event in events_tomorrow:
+        event_info = "{}\nTime: {}\nLocation: {}\nCategory: {}\n".format(
+                    event[0],event[1],event[2],event[3])
+        print(event_info)
+else:
+    print("there are no events tomorrow")
       
 # print("there are",len(free_food_events), "events")
 # for index, event in enumerate(free_food_events):
