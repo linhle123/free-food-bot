@@ -187,21 +187,20 @@ def send_button_message(recipient_id):
             "attachment":{
                 "type":"template",
                 "payload":{
-                    "template_type":"button",
                     "text":"Hi there! Let's cut to the chase. When are you down to have some free food?",
-                    "buttons":[
+                    "quick_replies":[
                         {
-                            "type":"postback",
+                            "content_type":"text",
                             "title":"Today",
                             "payload":"events today"
                         },
                         {
-                            "type":"postback",
+                            "content_type":"text",
                             "title":"Tomorrow",
                             "payload":"events tomorrow"
                         },
                         {
-                            "type":"postback",
+                            "content_type":"text",
                             "title":"This week",
                             "payload":"events this week"
                         }
