@@ -100,7 +100,7 @@ def webhook():
                             for event in events_today:
                                 send_event_info_new(sender_id, event)
                         else:
-                            send_message(sender_id, "I'm sorry, there is no event to show for this period)                            
+                            send_message(sender_id, "The good news is the best things in life are free. The bad news is they're not available today. I'll make it up to you another time.")                            
                     elif (payload == 'events tomorrow'):
                         #send info for events on tomorrow
                         if events_tomorrow:
@@ -108,12 +108,12 @@ def webhook():
                             for event in events_tomorrow:
                                 send_event_info_new(sender_id, event)
                         else:
-                            send_message(sender_id, "I'm sorry, there is no event to show for this period)                            
+                            send_message(sender_id, "The good news is the best things in life are free. The bad news is they're not available tomorrow. I'll make it up to you another time.")                            
                     elif (payload == 'events this week'):
                         if events_this_week:
                             send_message(sender_id, "events this week are:")
                         else:
-                            send_message(sender_id, "I'm sorry, there is no event to show for this period)                            
+                            send_message(sender_id, "The good news is the best things in life are free. The bad news is they're not available this week. I'll make it up to you another time.")                            
     return "ok", 200
 
 def send_event_info(sender_id, event):
