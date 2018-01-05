@@ -79,8 +79,8 @@ def webhook():
                             if events_this_week:
                                 send_message(sender_id, "events this week are:")
                             else:
-                                user_name = get_user_name(recipient_id)
-                                send_message(sender_id, "The good news is the best things in life are free. The bad news is they're not available this week. I'll make it up to you another time {}".format(user_name))                            
+                                # user_name = get_user_name(recipient_id)
+                                send_message(sender_id, "The good news is the best things in life are free. The bad news is they're not available this week. I'll make it up to you another time")                            
                     else:
                         if message_text == 'update':#update information when we tell it to
                             update_all_events_info(today)#simulate fetching data for today
@@ -206,6 +206,7 @@ def send_event_info_new(recipient_id, event):
         log(r.text)
 
 
+#can't get this to work, key error always
 def get_user_name(recipient_id):
     log("getting user's name")
     
