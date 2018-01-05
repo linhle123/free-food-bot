@@ -163,3 +163,51 @@ for event in get_free_food_events_hard_coded():
 #       }
 #    ]
 # }
+
+{  
+   "object":"page",
+   "entry":[  
+      {  
+         "id":"2024616067827339",
+         "time":1515154179223,
+         "messaging":[  
+            {  
+               "sender":{  
+                  "id":"1387570081371818"
+               },
+               "message":{  
+                  "quick_reply":{  
+                     "payload":"events today"
+                  },
+                  "nlp":{  
+                     "entities":{  
+                        "datetime":[  
+                           {  
+                              "value":"2018-01-05T00:00:00.000-06:00",
+                              "grain":"day",
+                              "confidence":0.95159,
+                              "values":[  
+                                 {  
+                                    "value":"2018-01-05T00:00:00.000-06:00",
+                                    "grain":"day",
+                                    "type":"value"
+                                 }
+                              ],
+                              "type":"value"
+                           }
+                        ]
+                     }
+                  },
+                  "text":"Today",
+                  "seq":505725,
+                  "mid":"mid.$cAAdrk7-JczVm939K9FgxjoCt5CAJ"
+               },
+               "timestamp":1515154178804,
+               "recipient":{  
+                  "id":"2024616067827339"
+               }
+            }
+         ]
+      }
+   ]
+}

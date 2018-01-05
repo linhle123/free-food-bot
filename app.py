@@ -53,14 +53,31 @@ def webhook():
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
                     
-                    # today_info = "Today is " + today.strftime('%m/%d/%Y')
-
-                    if message_text == 'update':#update information when we tell it to
-                        update_all_events_info(today)#simulate fetching data for today
-                        #actually done only once per day
-                        send_message(sender_id, "updated")
+                    message = messaging_event["message"]
+                    payload = ""
+                    #if user use quick reply
+                    if message.get("quick_reply"):
+                        payload = message["quick_reply"]["payload"]
+                        # today_info = "Today is " + today.strftime('%m/%d/%Y')
+                        if (payload == 'events today'):
+                            #send info for events on today
+                            send_message(sender_id, "events today are:")
+                            for event in events_today:
+                                send_event_info_new(sender_id, event)                            
+                        elif (payload == 'events tomorrow'):
+                            #send info for events on tomorrow
+                            send_message(sender_id, "events tomorrow are:")
+                            for event in events_tomorrow:
+                                send_event_info_new(sender_id, event) 
+                        elif (payload == 'events this week'):
+                            send_message(sender_id, "events this week are:")
                     else:
-                        send_message(sender_id, "I'm sorry I can't do much beyond letting you know where to find free food")
+                        if message_text == 'update':#update information when we tell it to
+                            update_all_events_info(today)#simulate fetching data for today
+                            #actually done only once per day
+                            send_message(sender_id, "updated")
+                        else:
+                            send_message(sender_id, "I'm sorry I can't do much beyond letting you know where to find free food")
                     
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
