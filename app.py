@@ -61,16 +61,25 @@ def webhook():
                         # today_info = "Today is " + today.strftime('%m/%d/%Y')
                         if (payload == 'events today'):
                             #send info for events on today
-                            send_message(sender_id, "events today are:")
-                            for event in events_today:
-                                send_event_info_new(sender_id, event)                            
+                            if events_today:
+                                send_message(sender_id, "events today are:")
+                                for event in events_today:
+                                    send_event_info_new(sender_id, event)
+                            else:
+                                send_message(sender_id, "The good news is the best things in life are free. The bad news is they're not available today. I'll make it up to you another time.")                                                     
                         elif (payload == 'events tomorrow'):
-                            #send info for events on tomorrow
-                            send_message(sender_id, "events tomorrow are:")
-                            for event in events_tomorrow:
-                                send_event_info_new(sender_id, event) 
+                            if events_tomorrow:
+                                #send info for events on tomorrow
+                                send_message(sender_id, "events tomorrow are:")
+                                for event in events_tomorrow:
+                                    send_event_info_new(sender_id, event)
+                            else:
+                                send_message(sender_id, "The good news is the best things in life are free. The bad news is they're not available tomorrow. I'll make it up to you another time.")                   
                         elif (payload == 'events this week'):
-                            send_message(sender_id, "events this week are:")
+                            if events_this_week:
+                                send_message(sender_id, "events this week are:")
+                            else:
+                                send_message(sender_id, "The good news is the best things in life are free. The bad news is they're not available this week. I'll make it up to you another time.")                            
                     else:
                         if message_text == 'update':#update information when we tell it to
                             update_all_events_info(today)#simulate fetching data for today
