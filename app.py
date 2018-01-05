@@ -223,7 +223,6 @@ def get_user_name(recipient_id):
             "text": message_text
         }
     })
-    format(recipient=recipient_id, text=message_text))
     command = "https://graph.facebook.com/v2.6/<{}>?fields=first_name,last_name,profile_pic&access_token={}".format(recipient_id,os.environ["PAGE_ACCESS_TOKEN"])
 
     r = requests.get(command)
