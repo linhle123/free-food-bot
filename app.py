@@ -45,23 +45,24 @@ def webhook():
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
                     
-                    if (message_text == "buttons"):
-                        send_button_message(sender_id)
-                    else:
-                        #make up a day
-                        today = datetime.date(2018, 1, 12)
-                        # today = datetime.datetime.now()
-                        today_info = "Assume today is " + today.strftime('%m/%d/%Y')
-                        send_message(sender_id, today_info)
-                        send_message(sender_id, "free-food events tomorrow are")
-                                            
-                        events_tomorrow = get_events_tomorrow(get_free_food_events(), today)
-                        if events_tomorrow:
-                            for event in events_tomorrow:#add indentation here
-                                event_info = "{}\nTime: {}\nLocation: {}\nCategory: {}\n".format(event[0],event[1],event[2],event[3])
-                                send_message(sender_id, event_info)
-                        else:
-                            send_message(sender_id, "there are no events tomorrow")
+                    send_button_message(sender_id)
+                    # if (message_text == "buttons"):
+                    #     else:
+
+                    # #make up a day
+                    # today = datetime.date(2018, 1, 12)
+                    # # today = datetime.datetime.now()
+                    # today_info = "Assume today is " + today.strftime('%m/%d/%Y')
+                    # send_message(sender_id, today_info)
+                    # send_message(sender_id, "free-food events tomorrow are")
+                                        
+                    # events_tomorrow = get_events_tomorrow(get_free_food_events(), today)
+                    # if events_tomorrow:
+                    #     for event in events_tomorrow:#add indentation here
+                    #         event_info = "{}\nTime: {}\nLocation: {}\nCategory: {}\n".format(event[0],event[1],event[2],event[3])
+                    #         send_message(sender_id, event_info)
+                    # else:
+                    #     send_message(sender_id, "there are no events tomorrow")
 
                     #make up some date to test bot
                     # today = datetime.date(2018, 1, 12)
@@ -78,9 +79,17 @@ def webhook():
                     pass
 
                 if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
-                    if (messaging_event['postback']['payload'] == 'first message sent'):
-                        sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
-                        send_message(sender_id, "Hi there! I'll tell you when the free food events are on campus.")                        
+                    payload = messaging_event['postback']['payload']
+                    sender_id = messaging_event["sender"]["id"]
+                    if (payload == 'first message sent'):
+                        send_message(sender_id, "Hi there! I'll tell you when the free food events are on campus.")                     
+                    elif (payload == 'events today'):
+                        send_message(sender_id, "events today are:")
+                    elif (payload == 'events tomorrow'):
+                        send_message(sender_id, "events tomorrow are:")
+                    elif (payload == 'events this week'):
+                        send_message(sender_id, "events this week are:")
+                        
 
     return "ok", 200
 
@@ -139,17 +148,22 @@ def send_button_message(recipient_id):
                 "type":"template",
                 "payload":{
                     "template_type":"button",
-                    "text":"What do you want?",
+                    "text":"Hi there! I'll tell you when the free food events are on campus. When are you down to have some free food?",
                     "buttons":[
                         {
-                            "type":"web_url",
-                            "url":"google.com",
-                            "title":"show website"
+                            "type":"postback",
+                            "title":"Today",
+                            "payload":"events today"
                         },
                         {
                             "type":"postback",
-                            "title":"Start chatting",
-                            "payload":"someshit to modify"
+                            "title":"Tomorrow",
+                            "payload":"events tomorrow"
+                        },
+                        {
+                            "type":"postback",
+                            "title":"This week",
+                            "payload":"events this week"
                         }
                     ]
                 }
