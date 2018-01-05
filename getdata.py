@@ -63,16 +63,24 @@ def get_free_food_events():
     #contains html of the list of free food events
     # events are the "a"" tags with href like this: href="/event/1629631"
     eventList = bsObj.findAll("a", {"href":re.compile("\/event\/")})
-
+    # print(eventList[0]['href'])
     #within the html of each event, find tags with string contents
     # eventDetails is an array of arrays, each element contains info for an event 
-    eventDetails = [event.findAll(string=True) for event in eventList]
+    
+    # eventDetails = [event.findAll(string=True) for event in eventList]
+    eventDetails = []
+    #can somehow use list comprehension to filter for eventDetail?
+    for event in eventList:
+        temp = event.findAll(string=True)
+        temp.append(event['href'])
+        eventDetails.append(temp)
     
     return eventDetails
    
 
 def get_free_food_events_hard_coded():
-    return [['Research Connections', 'Monday, January 8 at 12:00 PM CST', 'Light Hall', 'Learning'], ['Welcome Back Brunch!', 'Monday, January 8 at 11:00 AM CST', 'KC Potter Center', 'Social'], ['GCC Career Talk Series with Mason Ji', 'Tuesday, January 9 at 5:15 PM CST', 'Kissam MPR', 'Group Business'], ['Journal Club: Concussions and CTE (Chronic Traumatic Encephalopathy)', 'Wednesday, January 10 at 5:00 PM CST', 'Light Hall', 'Learning'], ['Literature, Arts, & Medicine: Cultural Series', 'Thursday, January 11 at 12:00 PM CST', 'Light Hall 208', 'Arts & Music'], ['[Wellness] January Social Rounds!', 'Friday, January 12 at 5:00 PM CST', 'Light Hall Student Lounge', 'Social'], ['2018 MLK Weekend of Service', 'Saturday, January 13 at 8:00 AM CST', 'Fisk University', 'Service'], ['APAMSA Mooncake Making Night', 'Saturday, January 13 at 6:00 PM CST', "Kate's Home", 'Cultural'], ['Gabbe Roars Into the New Year', 'Saturday, January 13 at 6:30 PM CST', "Dr. Allos's Home ", 'Social'], ['Health Guardians of America: Fitlifeflow Outreach Event', 'Tuesday, January 16 at 5:30 PM CST', 'Commons Atrium', 'Social'], ['Winning Strategies for the Global Health Case Competition ', 'Wednesday, January 17 at 5:00 PM CST', 'Buttrick Hall 202 ', 'Group Business'], ['TOM:Vanderbilt Makeathon', 'Friday, January 19 at 12:00 PM CST', "The Wond'ry", 'Service'], ['An Evening in Ecuador: MEDLIFE Public Health Fair', 'Thursday, January 25 at 5:00 PM CST', 'Kissam: Warren and More', 'Cultural'], ['GHHS Induction Ceremony', 'Thursday, January 25 at 6:00 PM CST', 'Student Life Center - Board of Trust Room (140)', 'Social'], ['Vandy Cooks - Warm Up with Soups', 'Friday, January 26 at 12:00 PM CST', 'Vanderbilt Recreation & Wellness Center', 'Learning']]
+    return [['Research Connections', 'Monday, January 8 at 12:00 PM CST', 'Light Hall', 'Learning', '/event/1629631'], ['Welcome Back Brunch!', 'Monday, January 8 at 11:00 AM CST', 'KC Potter Center', 'Social', '/event/1670361'], ['GCC Career Talk Series with Mason Ji', 'Tuesday, January 9 at 5:15 PM CST', 'Kissam MPR', 'Group Business', '/event/1671339'], ['Journal Club: Concussions and CTE (Chronic Traumatic Encephalopathy)', 'Wednesday, January 10 at 5:00 PM CST', 'Light Hall', 'Learning', '/event/1744861'], ['Literature, Arts, & Medicine: Cultural Series', 'Thursday, January 11 at 12:00 PM CST', 'Light Hall 208', 'Arts & Music', '/event/1614211'], ['[Wellness] January Social Rounds!', 'Friday, January 12 at 5:00 PM CST', 'Light Hall Student Lounge', 'Social', '/event/1692579'], ['2018 MLK Weekend of Service', 'Saturday, January 13 at 8:00 AM CST', 'Fisk University', 'Service', '/event/1643195'], ['APAMSA Mooncake Making Night', 'Saturday, January 13 at 6:00 PM CST', "Kate's Home", 'Cultural', '/event/1673020'], ['Gabbe Roars Into the New Year', 'Saturday, January 13 at 6:30 PM CST', "Dr. Allos's Home ", 'Social', '/event/1713544'], ['Health Guardians of America: Fitlifeflow Outreach Event', 'Tuesday, January 16 at 5:30 PM CST', 'Commons Atrium', 'Social', '/event/1671343'], ['Winning Strategies for the Global Health Case Competition ', 'Wednesday, January 17 at 5:00 PM CST', 'Buttrick Hall 202 ', 'Group Business', '/event/1671347'], ['TOM:Vanderbilt Makeathon', 'Friday, January 19 at 12:00 PM CST', "The Wond'ry", 'Service', '/event/1649716'], ['An Evening in Ecuador: MEDLIFE Public Health Fair', 'Thursday, January 25 at 5:00 PM CST', 'Kissam: Warren and More', 'Cultural', '/event/1671360'], ['GHHS Induction Ceremony', 'Thursday, January 25 at 6:00 PM CST', 'Student Life Center - Board of Trust Room (140)', 'Social', '/event/1652304'], ['Vandy Cooks - Warm Up with Soups', 'Friday, January 26 at 12:00 PM CST', 'Vanderbilt Recreation & Wellness Center', 'Learning', '/event/1676927']]
+
 
 
 # datetime given from data does not specify the year, need to add the correct year
@@ -91,6 +99,7 @@ def get_events_tomorrow(events, today):
     return events_tomorrow
 
 free_food_events = get_free_food_events_hard_coded()
+
 myevent = free_food_events[3]
 
 #convert time of event to datetime object
@@ -101,18 +110,22 @@ for event in free_food_events:
 today = datetime.date(2018, 1, 12)
 tempday = datetime.datetime.now()
 today_info = "today is " + tempday.strftime('%m/%d/%Y')
-print(today_info)
+# print(today_info)
 events_tomorrow = get_events_tomorrow(free_food_events, today)
 
+# print(get_free_food_events_hard_coded())
+#print without extra space added, no separation
+for event in get_free_food_events_hard_coded():
+    print("https://anchorlink.vanderbilt.edu",event[4],sep="")
 
-if events_tomorrow:
-    for event in events_tomorrow:
-        #notice we print time in 12hr format
-        event_info = "{}\nTime: {}\nLocation: {}\n".format(
-                    event[0],event[1].strftime("%I:%M %p"),event[2])
-        print(event_info)
-else:
-    print("there are no events tomorrow")
+# if events_tomorrow:
+#     for event in events_tomorrow:
+#         #notice we print time in 12hr format
+#         event_info = "{}\nTime: {}\nLocation: {}\n".format(
+#                     event[0],event[1].strftime("%I:%M %p"),event[2])
+#         print(event_info)
+# else:
+#     print("there are no events tomorrow")
       
 
 
