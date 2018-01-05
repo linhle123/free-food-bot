@@ -30,7 +30,7 @@ def verify():
 def webhook():
 
     # endpoint for processing incoming messaging events
-    #data is json data about user's message to this bot
+
     data = request.get_json()
     log(data)  # you may not want to log every incoming message in production, but it's good for testing
 
@@ -59,6 +59,14 @@ def webhook():
                             send_message(sender_id, event_info)
                     else:
                         send_message(sender_id, "there are no events tomorrow")
+
+                    #make up some date to test bot
+                    # today = datetime.date(2018, 1, 12)
+                    # free_food_events_tomorrow = get_events_tomorrow(get_free_food_events(), today)
+                    # for event in free_food_events_tomorrow:
+                    #     event_info = "{}\nTime: {}\nLocation: {}\nCategory: {}\n".format(
+                    #                 event[0],event[1],event[2],event[3])
+                    #     send_message(sender_id, event_info)
                     
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
@@ -67,9 +75,7 @@ def webhook():
                     pass
 
                 if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
-                    sender_id = messaging_event["sender"]["id"]  
-                    if messaging_event["postback"]["payload"] == "first message sent":
-                        send_message(sender_id, "welcome new friend!")
+                    pass
 
     return "ok", 200
 

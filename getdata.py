@@ -90,8 +90,8 @@ def get_events_tomorrow(events, today):
             events_tomorrow.append(event)
     return events_tomorrow
 
-
 free_food_events = get_free_food_events_hard_coded()
+myevent = free_food_events[3]
 
 #convert time of event to datetime object
 for event in free_food_events:
@@ -117,30 +117,4 @@ else:
 #     event_info = "{}\nTime: {}\nLocation: {}\nCategory: {}\n".format(
 #                 event[0],event[1],event[2],event[3])
 #     print(event_info)
-
-
-{  
-   "object":"page",
-   "entry":[  
-      {  
-         "id":"2024616067827339",
-         "messaging":[  
-            {  
-               "timestamp":1515127781475,
-               "message":{  
-                  "text":"yo",
-                  "mid":"mid.$cAAdrk7-JczVm9eyAY1gxKc3966xx",
-                  "seq":504816
-               },
-               "sender":{  
-                  "id":"1387570081371818"
-               },
-               "recipient":{  
-                  "id":"2024616067827339"
-               }
-            }
-         ],
-         "time":1515127781667
-      }
-   ]
-}
+                
