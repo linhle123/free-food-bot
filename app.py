@@ -154,7 +154,7 @@ def send_event_info_new(recipient_id, event):
                             "type":"web_url",
                             "url":"https://anchorlink.vanderbilt.edu"+event[4],
                             "title":"Details",
-                            "webview_height_ratio": "compact",
+                            "webview_height_ratio": "tall",
                         }
                     ]
                 }
