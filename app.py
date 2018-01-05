@@ -210,10 +210,11 @@ def get_user_name(recipient_id):
     log("getting user's name")
     
     
-    command = "https://graph.facebook.com/v2.6/<{}>?fields=first_name,last_name,profile_pic&access_token={}".format(recipient_id,os.environ["PAGE_ACCESS_TOKEN"])
-    data = requests.get(command).json() #need to convert Response object returned into json
-    
-    return data["first_name"]
+    command = "https://graph.facebook.com/v2.6/<"+recipient_id+">?fields=first_name,last_name,profile_pic&access_token=EAACNsF2oEyABAEpRsZBkjELZCRUUuTZAJVRodGwM7OZCjgPquG4Bc8svqZBBdntgBxRmlIIsGM6dc3SzVo7NRG3pDU8HZB7ZAfZAUzJ01rZCHjXNQL3TaS8thGtrQMaT3axvj7kFaPflRcSkUtMV8gyHkLxhgHdk7I7EDOgtJZBPyUxjqno4yhbkH1"
+
+    data = requests.get(command) #.json() #need to convert Response object returned into json
+    log(data.content)
+    return data.json()["first_name"]
 
     # curl -X GET "https://graph.facebook.com/v2.6/<PSID>?fields=first_name,last_name,profile_pic&access_token=<PAGE_ACCESS_TOKEN>"
 
