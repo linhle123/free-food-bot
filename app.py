@@ -79,6 +79,9 @@ def webhook():
                         else:
                             send_message(sender_id, "I'm sorry I can't do much beyond letting you know where to find free food")
                     
+                    #after getting user's preference, keep asking again`
+                    send_quick_reply_message(sender_id, "When are you down to have some free food?")
+                    
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
 
@@ -89,7 +92,7 @@ def webhook():
                     payload = messaging_event['postback']['payload']
                     sender_id = messaging_event["sender"]["id"]
                     if (payload == 'first message sent'):
-                        send_button_message(sender_id)
+                        send_quick_reply_message(sender_id, "Hi there! Let's cut to the chase. When are you down to have some free food?")
                     elif (payload == 'events today'):
                         #send info for events on today
                         send_message(sender_id, "events today are:")
@@ -171,7 +174,7 @@ def send_event_info_new(recipient_id, event):
                             "type":"web_url",
                             "url":"https://anchorlink.vanderbilt.edu"+event[4],
                             "title":"Details",
-                            "webview_height_ratio": "tall",
+                            "webview_height_ratio": "compact",
                         }
                     ]
                 }
@@ -185,7 +188,7 @@ def send_event_info_new(recipient_id, event):
 
 
 
-def send_button_message(recipient_id):
+def send_quick_reply_message(recipient_id, message_text):
     
     log("sending message to {recipient}: {text}".format(recipient=recipient_id, text="button message"))
 
@@ -201,7 +204,7 @@ def send_button_message(recipient_id):
             "id": recipient_id
         },
         "message": {
-            "text":"Hi there! Let's cut to the chase. When are you down to have some free food?",
+            "text":message_text,
             "quick_replies":[
                 {
                     "content_type":"text",
