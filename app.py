@@ -49,20 +49,20 @@ def webhook():
                     # if (message_text == "buttons"):
                     #     else:
 
-                    # #make up a day
-                    # today = datetime.date(2018, 1, 12)
-                    # # today = datetime.datetime.now()
-                    # today_info = "Assume today is " + today.strftime('%m/%d/%Y')
-                    # send_message(sender_id, today_info)
-                    # send_message(sender_id, "free-food events tomorrow are")
+                    #make up a day
+                    today = datetime.date(2018, 1, 12)
+                    # today = datetime.datetime.now()
+                    today_info = "Assume today is " + today.strftime('%m/%d/%Y')
+                    send_message(sender_id, today_info)
+                    send_message(sender_id, "free-food events tomorrow are")
                                         
-                    # events_tomorrow = get_events_tomorrow(get_free_food_events(), today)
-                    # if events_tomorrow:
-                    #     for event in events_tomorrow:#add indentation here
-                    #         event_info = "{}\nTime: {}\nLocation: {}\nCategory: {}\n".format(event[0],event[1],event[2],event[3])
-                    #         send_message(sender_id, event_info)
-                    # else:
-                    #     send_message(sender_id, "there are no events tomorrow")
+                    events_tomorrow = get_events_tomorrow(get_free_food_events(), today)
+                    if events_tomorrow:
+                        for event in events_tomorrow:#add indentation here
+                            event_info = "{}\nTime: {}\nLocation: {}\nCategory: {}\n".format(event[0],event[1],event[2],event[3])
+                            send_message(sender_id, event_info)
+                    else:
+                        send_message(sender_id, "there are no events tomorrow")
 
                     #make up some date to test bot
                     # today = datetime.date(2018, 1, 12)
@@ -82,25 +82,42 @@ def webhook():
                     payload = messaging_event['postback']['payload']
                     sender_id = messaging_event["sender"]["id"]
                     if (payload == 'first message sent'):
-                        send_message(sender_id, "Hi there! I'll tell you when the free food events are on campus.")                     
+                        send_message(sender_id, "Hi there! I'll tell you when and where the free food events are on campus.")                     
                     elif (payload == 'events today'):
                         send_message(sender_id, "events today are:")
+                        today = datetime.date(2018, 1, 12)
+                        #send info for events on today
+                        for event in get_events_on_date(get_free_food_events(), today):
+                            send_event_info(sender_id, event)                            
                     elif (payload == 'events tomorrow'):
                         send_message(sender_id, "events tomorrow are:")
+                        tomorrow = datetime.date(2018, 1, 12) + datetime.timedelta(days=1)
+                        #send info for events on tomorrow
+                        for event in get_events_on_date(get_free_food_events(), tomorrow):
+                            send_event_info(sender_id, event) 
                     elif (payload == 'events this week'):
                         send_message(sender_id, "events this week are:")
                         
 
     return "ok", 200
 
+def send_event_info(sender_id, event):
+    event_info = "{}\nTime: {}\nLocation: {}\nCategory: {}\n".format(event[0],event[1],event[2],event[3])
+    send_message(sender_id, event_info)
 
-def get_events_tomorrow(events, today):
-    events_tomorrow = []
+
+def get_events_today():
+    today = datetime.date(2018, 1, 12)
+        
+# + datetime.timedelta(days=1)
+
+def get_events_on_date(events, date):
+    events = []
     for event in events:
         #this can be improved
-        if event[1].day == (today + datetime.timedelta(days=1)).day:
-            events_tomorrow.append(event)
-    return events_tomorrow
+        if event[1].day == (date).day:
+            events.append(event)
+    return events
 
 
 # datetime given from data does not specify the year, need to add the correct year
@@ -116,6 +133,8 @@ def get_free_food_events():
         event[1] = convert_to_datetime(event[1])
     return free_food_events
     
+
+
 #raw message is a json
 # button_message = '{
 #     "recipient"
