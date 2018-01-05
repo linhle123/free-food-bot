@@ -45,20 +45,23 @@ def webhook():
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
                     
-                    #make up a day
-                    today = datetime.date(2018, 1, 12)
-                    # today = datetime.datetime.now()
-                    today_info = "Assume today is " + today.strftime('%m/%d/%Y')
-                    send_message(sender_id, today_info)
-                    send_message(sender_id, "free-food events tomorrow are")
-                                        
-                    events_tomorrow = get_events_tomorrow(get_free_food_events(), today)
-                    if events_tomorrow:
-                        for event in events_tomorrow:#add indentation here
-                            event_info = "{}\nTime: {}\nLocation: {}\nCategory: {}\n".format(event[0],event[1],event[2],event[3])
-                            send_message(sender_id, event_info)
+                    if (message_text == "buttons"):
+                        send_button_message(sender_id)
                     else:
-                        send_message(sender_id, "there are no events tomorrow")
+                        #make up a day
+                        today = datetime.date(2018, 1, 12)
+                        # today = datetime.datetime.now()
+                        today_info = "Assume today is " + today.strftime('%m/%d/%Y')
+                        send_message(sender_id, today_info)
+                        send_message(sender_id, "free-food events tomorrow are")
+                                            
+                        events_tomorrow = get_events_tomorrow(get_free_food_events(), today)
+                        if events_tomorrow:
+                            for event in events_tomorrow:#add indentation here
+                                event_info = "{}\nTime: {}\nLocation: {}\nCategory: {}\n".format(event[0],event[1],event[2],event[3])
+                                send_message(sender_id, event_info)
+                        else:
+                            send_message(sender_id, "there are no events tomorrow")
 
                     #make up some date to test bot
                     # today = datetime.date(2018, 1, 12)
@@ -104,6 +107,60 @@ def get_free_food_events():
         event[1] = convert_to_datetime(event[1])
     return free_food_events
     
+#raw message is a json
+# button_message = '{
+#     "recipient"
+#     "buttons":[
+#     {
+#         "type":"postback",
+#         "title":"Bookmark Item",
+#         "payload":"DEVELOPER_DEFINED_PAYLOAD"
+#     }
+#     ]
+# }'
+
+def send_button_message(recipient_id):
+    
+    log("sending message to {recipient}: {text}".format(recipient=recipient_id, text="button message"))
+
+    params = {
+        "access_token": os.environ["PAGE_ACCESS_TOKEN"]
+    }
+    headers = {
+        "Content-Type": "application/json"
+    }
+    # data = json.dumps(raw_message)
+    data = json.dumps({
+        "recipient": {
+            "id": recipient_id
+        },
+        "message": {
+            "attachment":{
+                "type":"template",
+                "payload":{
+                    "template_type":"button",
+                    "text":"What do you want?",
+                    "buttons":[
+                        {
+                            "type":"web_url",
+                            "url":"google.com",
+                            "title":"show website"
+                        },
+                        {
+                            "type":"postback",
+                            "title":"Start chatting",
+                            "payload":"someshit to modify"
+                        }
+                    ]
+                }
+            }
+        }
+    })
+    r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
+    if r.status_code != 200:
+        log(r.status_code)
+        log(r.text)
+
 
 def send_message(recipient_id, message_text):
 
