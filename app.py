@@ -212,11 +212,7 @@ def get_user_name(recipient_id):
     
     command = "https://graph.facebook.com/v2.6/<{}>?fields=first_name,last_name,profile_pic&access_token={}".format(recipient_id,os.environ["PAGE_ACCESS_TOKEN"])
 
-    r = requests.get(command)
-
-    if r.status_code != 200:
-        log(r.status_code)
-        log(r.text)
+    return requests.get(command)
 
     # curl -X GET "https://graph.facebook.com/v2.6/<PSID>?fields=first_name,last_name,profile_pic&access_token=<PAGE_ACCESS_TOKEN>"
 
