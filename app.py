@@ -82,18 +82,13 @@ def webhook():
                             send_event_info(sender_id, event) 
                     elif (payload == 'events this week'):
                         send_message(sender_id, "events this week are:")
-                        
-
     return "ok", 200
 
 def send_event_info(sender_id, event):
-    event_info = "{}\nTime: {}\nLocation: {}\nCategory: {}\n".format(event[0],event[1],event[2],event[3])
+    event_info = "{}\nTime: {}\nLocation: {}\n".format(
+                    event[0],event[1].strftime("%I:%M %p"),event[2])
     send_message(sender_id, event_info)
 
-
-def get_events_today():
-    today = datetime.date(2018, 1, 12)
-        
 
 def get_events_on_date(events, date):
     events_on_date = []
@@ -128,22 +123,6 @@ def update_all_events_info(today):
     events_tomorrow = get_events_on_date(free_food_events, tomorrow)
 
 
-    
-def update_events_today():
-    global events_today
-
-
-#raw message is a json
-# button_message = '{
-#     "recipient"
-#     "buttons":[
-#     {
-#         "type":"postback",
-#         "title":"Bookmark Item",
-#         "payload":"DEVELOPER_DEFINED_PAYLOAD"
-#     }
-#     ]
-# }'
 
 def send_button_message(recipient_id):
     
