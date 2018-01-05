@@ -211,7 +211,7 @@ def get_user_name(recipient_id):
     
     
     command = "https://graph.facebook.com/v2.6/<{}>?fields=first_name,last_name,profile_pic&access_token={}".format(recipient_id,os.environ["PAGE_ACCESS_TOKEN"])
-    data = requests.get(command).get_json() #need get_json to convert Response object returned into json
+    data = requests.get(command).json() #need to convert Response object returned into json
     
     return data["first_name"]
 
