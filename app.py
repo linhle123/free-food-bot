@@ -53,12 +53,14 @@ def webhook():
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
                     
-                    today_info = "Today is " + today.strftime('%m/%d/%Y')
+                    # today_info = "Today is " + today.strftime('%m/%d/%Y')
+
                     if message_text == 'update':#update information when we tell it to
                         update_all_events_info(today)#simulate fetching data for today
                         #actually done only once per day
                         send_message(sender_id, "updated")
-                    
+                    else:
+                        send_message(sender_id, "I'm sorry I can't do much beyond letting you know where to find free food")
                     
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
@@ -151,7 +153,8 @@ def send_event_info_new(recipient_id, event):
                         {
                             "type":"web_url",
                             "url":"https://anchorlink.vanderbilt.edu"+event[4],
-                            "title":"Details"
+                            "title":"Details",
+                            "webview_height_ratio": "compact",
                         }
                     ]
                 }
