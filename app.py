@@ -95,16 +95,25 @@ def webhook():
                         send_quick_reply_message(sender_id, "Hi there! Let's cut to the chase. When are you down to have some free food?")
                     elif (payload == 'events today'):
                         #send info for events on today
-                        send_message(sender_id, "events today are:")
-                        for event in events_today:
-                            send_event_info_new(sender_id, event)                            
+                        if events_today:
+                            send_message(sender_id, "events today are:")
+                            for event in events_today:
+                                send_event_info_new(sender_id, event)
+                        else:
+                            send_message(sender_id, "I'm sorry, there is no event to show for this period)                            
                     elif (payload == 'events tomorrow'):
                         #send info for events on tomorrow
-                        send_message(sender_id, "events tomorrow are:")
-                        for event in events_tomorrow:
-                            send_event_info_new(sender_id, event) 
+                        if events_tomorrow:
+                            send_message(sender_id, "events tomorrow are:")
+                            for event in events_tomorrow:
+                                send_event_info_new(sender_id, event)
+                        else:
+                            send_message(sender_id, "I'm sorry, there is no event to show for this period)                            
                     elif (payload == 'events this week'):
-                        send_message(sender_id, "events this week are:")
+                        if events_this_week:
+                            send_message(sender_id, "events this week are:")
+                        else:
+                            send_message(sender_id, "I'm sorry, there is no event to show for this period)                            
     return "ok", 200
 
 def send_event_info(sender_id, event):
