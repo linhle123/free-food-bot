@@ -209,20 +209,7 @@ def send_event_info_new(recipient_id, event):
 def get_user_name(recipient_id):
     log("getting user's name")
     
-    params = {
-        "access_token": os.environ["PAGE_ACCESS_TOKEN"]
-    }
-    headers = {
-        "Content-Type": "application/json"
-    }
-    data = json.dumps({
-        "recipient": {
-            "id": recipient_id
-        },
-        "message": {
-            "text": message_text
-        }
-    })
+    
     command = "https://graph.facebook.com/v2.6/<{}>?fields=first_name,last_name,profile_pic&access_token={}".format(recipient_id,os.environ["PAGE_ACCESS_TOKEN"])
 
     r = requests.get(command)
