@@ -13,6 +13,14 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
+#global values, to be updated every day
+today = datetime.date(2018, 1, 12)
+events_today = []
+events_tomorrow = []
+events_this_week = []
+
+free_food_events = [['Research Connections', 'Monday, January 8 at 12:00 PM CST', 'Light Hall', 'Learning'], ['Welcome Back Brunch!', 'Monday, January 8 at 11:00 AM CST', 'KC Potter Center', 'Social'], ['GCC Career Talk Series with Mason Ji', 'Tuesday, January 9 at 5:15 PM CST', 'Kissam MPR', 'Group Business'], ['Journal Club: Concussions and CTE (Chronic Traumatic Encephalopathy)', 'Wednesday, January 10 at 5:00 PM CST', 'Light Hall', 'Learning'], ['Literature, Arts, & Medicine: Cultural Series', 'Thursday, January 11 at 12:00 PM CST', 'Light Hall 208', 'Arts & Music'], ['[Wellness] January Social Rounds!', 'Friday, January 12 at 5:00 PM CST', 'Light Hall Student Lounge', 'Social'], ['2018 MLK Weekend of Service', 'Saturday, January 13 at 8:00 AM CST', 'Fisk University', 'Service'], ['APAMSA Mooncake Making Night', 'Saturday, January 13 at 6:00 PM CST', "Kate's Home", 'Cultural'], ['Gabbe Roars Into the New Year', 'Saturday, January 13 at 6:30 PM CST', "Dr. Allos's Home ", 'Social'], ['Health Guardians of America: Fitlifeflow Outreach Event', 'Tuesday, January 16 at 5:30 PM CST', 'Commons Atrium', 'Social'], ['Winning Strategies for the Global Health Case Competition ', 'Wednesday, January 17 at 5:00 PM CST', 'Buttrick Hall 202 ', 'Group Business'], ['TOM:Vanderbilt Makeathon', 'Friday, January 19 at 12:00 PM CST', "The Wond'ry", 'Service'], ['An Evening in Ecuador: MEDLIFE Public Health Fair', 'Thursday, January 25 at 5:00 PM CST', 'Kissam: Warren and More', 'Cultural'], ['GHHS Induction Ceremony', 'Thursday, January 25 at 6:00 PM CST', 'Student Life Center - Board of Trust Room (140)', 'Social'], ['Vandy Cooks - Warm Up with Soups', 'Friday, January 26 at 12:00 PM CST', 'Vanderbilt Recreation & Wellness Center', 'Learning']]
+
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -28,7 +36,7 @@ def verify():
 
 @app.route('/', methods=['POST'])
 def webhook():
-
+    global today
     # endpoint for processing incoming messaging events
 
     data = request.get_json()
@@ -45,32 +53,11 @@ def webhook():
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
                     
-                    send_button_message(sender_id)
-                    # if (message_text == "buttons"):
-                    #     else:
-
-                    #make up a day
-                    today = datetime.date(2018, 1, 12)
-                    # today = datetime.datetime.now()
-                    today_info = "Assume today is " + today.strftime('%m/%d/%Y')
-                    send_message(sender_id, today_info)
-                    send_message(sender_id, "free-food events tomorrow are")
-                                        
-                    events_tomorrow = get_events_tomorrow(get_free_food_events(), today)
-                    if events_tomorrow:
-                        for event in events_tomorrow:#add indentation here
-                            event_info = "{}\nTime: {}\nLocation: {}\nCategory: {}\n".format(event[0],event[1],event[2],event[3])
-                            send_message(sender_id, event_info)
-                    else:
-                        send_message(sender_id, "there are no events tomorrow")
-
-                    #make up some date to test bot
-                    # today = datetime.date(2018, 1, 12)
-                    # free_food_events_tomorrow = get_events_tomorrow(get_free_food_events(), today)
-                    # for event in free_food_events_tomorrow:
-                    #     event_info = "{}\nTime: {}\nLocation: {}\nCategory: {}\n".format(
-                    #                 event[0],event[1],event[2],event[3])
-                    #     send_message(sender_id, event_info)
+                    today_info = "Today is " + today.strftime('%m/%d/%Y')
+                    if message_text == 'update':#update information when we tell it to
+                        update_all_events_info(today)#simulate fetching data for today
+                        #actually done only once per day
+                    
                     
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
@@ -82,18 +69,16 @@ def webhook():
                     payload = messaging_event['postback']['payload']
                     sender_id = messaging_event["sender"]["id"]
                     if (payload == 'first message sent'):
-                        send_message(sender_id, "Hi there! I'll tell you when and where the free food events are on campus.")                     
+                        send_button_message(sender_id)
                     elif (payload == 'events today'):
-                        send_message(sender_id, "events today are:")
-                        today = datetime.date(2018, 1, 12)
                         #send info for events on today
-                        for event in get_events_on_date(get_free_food_events(), today):
+                        send_message(sender_id, "events today are:")
+                        for event in events_today:
                             send_event_info(sender_id, event)                            
                     elif (payload == 'events tomorrow'):
-                        send_message(sender_id, "events tomorrow are:")
-                        tomorrow = datetime.date(2018, 1, 12) + datetime.timedelta(days=1)
                         #send info for events on tomorrow
-                        for event in get_events_on_date(get_free_food_events(), tomorrow):
+                        send_message(sender_id, "events tomorrow are:")
+                        for event in events_tomorrow:
                             send_event_info(sender_id, event) 
                     elif (payload == 'events this week'):
                         send_message(sender_id, "events this week are:")
@@ -109,15 +94,13 @@ def send_event_info(sender_id, event):
 def get_events_today():
     today = datetime.date(2018, 1, 12)
         
-# + datetime.timedelta(days=1)
 
 def get_events_on_date(events, date):
-    events = []
+    events_on_date = []
     for event in events:
-        #this can be improved
         if event[1].day == (date).day:
-            events.append(event)
-    return events
+            events_on_date.append(event)
+    return events_on_date
 
 
 # datetime given from data does not specify the year, need to add the correct year
@@ -126,13 +109,28 @@ def convert_to_datetime(event_time):
     correct_datetime = given_datetime.replace(year=datetime.datetime.now().year)
     return correct_datetime
 
-def get_free_food_events():
-    free_food_events = [['Research Connections', 'Monday, January 8 at 12:00 PM CST', 'Light Hall', 'Learning'], ['Welcome Back Brunch!', 'Monday, January 8 at 11:00 AM CST', 'KC Potter Center', 'Social'], ['GCC Career Talk Series with Mason Ji', 'Tuesday, January 9 at 5:15 PM CST', 'Kissam MPR', 'Group Business'], ['Journal Club: Concussions and CTE (Chronic Traumatic Encephalopathy)', 'Wednesday, January 10 at 5:00 PM CST', 'Light Hall', 'Learning'], ['Literature, Arts, & Medicine: Cultural Series', 'Thursday, January 11 at 12:00 PM CST', 'Light Hall 208', 'Arts & Music'], ['[Wellness] January Social Rounds!', 'Friday, January 12 at 5:00 PM CST', 'Light Hall Student Lounge', 'Social'], ['2018 MLK Weekend of Service', 'Saturday, January 13 at 8:00 AM CST', 'Fisk University', 'Service'], ['APAMSA Mooncake Making Night', 'Saturday, January 13 at 6:00 PM CST', "Kate's Home", 'Cultural'], ['Gabbe Roars Into the New Year', 'Saturday, January 13 at 6:30 PM CST', "Dr. Allos's Home ", 'Social'], ['Health Guardians of America: Fitlifeflow Outreach Event', 'Tuesday, January 16 at 5:30 PM CST', 'Commons Atrium', 'Social'], ['Winning Strategies for the Global Health Case Competition ', 'Wednesday, January 17 at 5:00 PM CST', 'Buttrick Hall 202 ', 'Group Business'], ['TOM:Vanderbilt Makeathon', 'Friday, January 19 at 12:00 PM CST', "The Wond'ry", 'Service'], ['An Evening in Ecuador: MEDLIFE Public Health Fair', 'Thursday, January 25 at 5:00 PM CST', 'Kissam: Warren and More', 'Cultural'], ['GHHS Induction Ceremony', 'Thursday, January 25 at 6:00 PM CST', 'Student Life Center - Board of Trust Room (140)', 'Social'], ['Vandy Cooks - Warm Up with Soups', 'Friday, January 26 at 12:00 PM CST', 'Vanderbilt Recreation & Wellness Center', 'Learning']]
+# get_free_food_events
+#this is called at the start of everyday, to update the info
+#to be given out to users
+#e.g what free food events for today are, for tomorrow are, for this week are
+def update_all_events_info(today):
+    global events_today
+    global events_tomorrow
+    global free_food_events
 
+    #convert datetime text to datetime objects
     for event in free_food_events:
         event[1] = convert_to_datetime(event[1])
-    return free_food_events
     
+    #update events_today to contain events today
+    events_today = get_events_on_date(free_food_events, today)
+    tomorrow = datetime.date(2018, 1, 12) + datetime.timedelta(days=1)
+    events_tomorrow = get_events_on_date(free_food_events, tomorrow)
+
+
+    
+def update_events_today():
+    global events_today
 
 
 #raw message is a json
@@ -167,7 +165,7 @@ def send_button_message(recipient_id):
                 "type":"template",
                 "payload":{
                     "template_type":"button",
-                    "text":"Hi there! I'll tell you when the free food events are on campus. When are you down to have some free food?",
+                    "text":"Hi there! Let's cut to the chase. When are you down to have some free food?",
                     "buttons":[
                         {
                             "type":"postback",
