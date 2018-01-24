@@ -15,7 +15,9 @@ import datetime
 def get_free_food_events_page():
     #this line is for heroku deployment, can also use this if added phantomjs file to executable_path
     #i.e. use "export PATH=$PATH:/home/linhle/phantomjs-2.1.1-linux-x86_64/bin/phantomjs"
-    driver = webdriver.PhantomJS()
+    # driver = webdriver.Chrome(executable_path='/home/linhle/Desktop/chromedriver')
+    # below is for use in heroku
+    driver = webdriver.Chrome($GOOGLE_CHROME_BIN)
     
     # set browser size to be big, otherwise some elements get hidden by responsive design
     driver.set_window_size(1124, 850) 
