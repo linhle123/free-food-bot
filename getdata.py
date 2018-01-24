@@ -81,22 +81,29 @@ def get_events_tomorrow(events, today):
             events_tomorrow.append(event)
     return events_tomorrow
 
-free_food_events = get_free_food_events_hard_coded()
+# free_food_events = get_free_food_events_hard_coded()
 
-myevent = free_food_events[3]
 
-#convert time of event to datetime object
-for event in free_food_events:
-    event[1] = convert_to_datetime(event[1])
+# myevent = free_food_events[3]
+
+def print_events_info():
+    free_food_events = get_free_food_events()
+    # convert time of event to datetime object
+    for event in free_food_events:
+        event[1] = convert_to_datetime(event[1])
+    for event in free_food_events:
+        event_info = "{}\nTime: {}\nLocation: {}\n".format(
+                    event[0],event[1].strftime("%I:%M %p"),event[2])
+        print(event_info)
+        # print("https://anchorlink.vanderbilt.edu",event[4],sep="")
+    
 
 # today = datetime.time(1,2,3)
-today = datetime.date(2018, 1, 12)
-tempday = datetime.datetime.now()
-today_info = "today is " + tempday.strftime('%m/%d/%Y')
+# today = datetime.date(2018, 1, 12)
+# tempday = datetime.datetime.now()
+# today_info = "today is " + tempday.strftime('%m/%d/%Y')
 # print(today_info)
-events_tomorrow = get_events_tomorrow(free_food_events, today)
+# events_tomorrow = get_events_tomorrow(free_food_events, today)
 
 # print(get_free_food_events_hard_coded())
 #print without extra space added, no separation
-for event in get_free_food_events_hard_coded():
-    print("https://anchorlink.vanderbilt.edu",event[4],sep="")
