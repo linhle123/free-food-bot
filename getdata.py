@@ -17,7 +17,7 @@ def get_free_food_events_page():
     #i.e. use "export PATH=$PATH:/home/linhle/phantomjs-2.1.1-linux-x86_64/bin/phantomjs"
     # driver = webdriver.Chrome(executable_path='/home/linhle/Desktop/chromedriver')
     # below is for use in heroku
-    driver = webdriver.Chrome(executable_path=os.environ['GOOGLE_CHROME_BIN'])
+    driver = webdriver.Chrome(executable_path=os.environ['GOOGLE_CHROME_SHIM'])
     
     # set browser size to be big, otherwise some elements get hidden by responsive design
     driver.set_window_size(1124, 850) 
