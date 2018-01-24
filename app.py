@@ -92,6 +92,7 @@ def webhook():
                         if message_text == 'update' and not updated:#update information when we tell it to
                             update_all_events_info(today)#simulate fetching data for today
                             #actually done only once per day
+                            updated = True
                             send_message(sender_id, "updated")
                         else:
                             send_message(sender_id, "I'm sorry I can't do much beyond letting you know where to find free food")

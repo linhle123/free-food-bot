@@ -24,11 +24,6 @@ def get_free_food_events_page():
     opts.binary_location = chrome_bin
     driver = webdriver.Chrome(executable_path="chromedriver", chrome_options=opts)
 
-
-    # chrome_exec_shim = os.environ.get("GOOGLE_CHROME_BIN", "chromedriver")
-    # driver = webdriver.Chrome(executable_path=chrome_exec_shim)
-    # driver = webdriver.Chrome(executable_path=os.environ['GOOGLE_CHROME_SHIM'])
-    
     # set browser size to be big, otherwise some elements get hidden by responsive design
     driver.set_window_size(1124, 850) 
     driver.get("https://anchorlink.vanderbilt.edu/events")
