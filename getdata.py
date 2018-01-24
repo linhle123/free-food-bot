@@ -1,7 +1,8 @@
 # from urllib.request import urlopen
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+# from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -17,7 +18,16 @@ def get_free_food_events_page():
     #i.e. use "export PATH=$PATH:/home/linhle/phantomjs-2.1.1-linux-x86_64/bin/phantomjs"
     # driver = webdriver.Chrome(executable_path='/home/linhle/Desktop/chromedriver')
     # below is for use in heroku
-    driver = webdriver.Chrome(executable_path=os.environ['GOOGLE_CHROME_SHIM'])
+    # https://github.com/heroku/heroku-buildpack-google-chrome/issues/26
+    chrome_bin = os.environ.get('GOOGLE_CHROME_SHIM', None)
+    opts = ChromeOptions()
+    opts.binary_location = chrome_bin
+    driver = webdriver.Chrome(executable_path="chromedriver", chrome_options=opts)
+
+
+    # chrome_exec_shim = os.environ.get("GOOGLE_CHROME_BIN", "chromedriver")
+    # driver = webdriver.Chrome(executable_path=chrome_exec_shim)
+    # driver = webdriver.Chrome(executable_path=os.environ['GOOGLE_CHROME_SHIM'])
     
     # set browser size to be big, otherwise some elements get hidden by responsive design
     driver.set_window_size(1124, 850) 
