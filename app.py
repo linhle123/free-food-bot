@@ -63,7 +63,7 @@ def webhook():
                         # today_info = "Today is " + today.strftime('%m/%d/%Y')
                         if (payload == 'events today'):
                             #send info for events on today
-                            respond(events_today, "this week", sender_id)     
+                            respond(events_today, "today", sender_id)     
                         elif (payload == 'events tomorrow'):
                             respond(events_tomorrow, "tomorrow", sender_id)
                                               
@@ -72,7 +72,8 @@ def webhook():
                     else:
                         if message_text == 'update' and not updated:#update information when we tell it to
                             getdata.update_events_info()
-                            # update_all_events_info(today)#simulate fetching data for today
+                            # update_all_events_info(today)
+                            # #simulate fetching data for today
                             #actually done only once per day
                             updated = True
                             send_message(sender_id, "updated")
@@ -85,7 +86,7 @@ def webhook():
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
 
-                if messaging_event.get("optin"):  # optin confirmation
+                if messaging_event.get("option"):  # option confirmation
                     pass
 
                 if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message         
