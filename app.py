@@ -22,6 +22,7 @@ events_this_week = []
 RSVP_msg = "Note: Some events need RSVP, please check their details"
 no_event_msg = "There's no free food during this period. Please check again later."
 ask_period_msg = "When are you down to have some free food?"
+greeting = "Hi there! Let's cut to the chase. When are you down to have some free food?"
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -87,8 +88,11 @@ def webhook():
                 if messaging_event.get("optin"):  # optin confirmation
                     pass
 
-                if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message                            
-                    pass
+                if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message         
+                    payload = messaging_event['postback']['payload']
+                    sender_id = messaging_event["sender"]["id"]
+                    if (payload == 'first message sent'):
+                        send_quick_reply_message(sender_id, greeting)                   
     return "ok", 200
 
 
