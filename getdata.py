@@ -100,7 +100,7 @@ def get_events_in_week(events):
     end = start + datetime.timedelta(days=6)
     events_in_week = []
     for event in events:
-        if start <= event[1].day <= end:
+        if start <= event[1] <= end:
             events_in_week.append(event)
     return events_in_week
     
