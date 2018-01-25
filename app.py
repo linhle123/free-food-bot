@@ -4,7 +4,7 @@ import json
 # from datetime import datetime
 import datetime
 
-import getdata 
+# import getdata 
 # from misc import misc_function
 
 import requests
@@ -74,11 +74,11 @@ def webhook():
                             respond(events_this_week, "this week", sender_id)
                     else:
                         if message_text == 'update' and not updated:#update information when we tell it to
-                            getdata.update_events_info()
+                            # getdata.update_events_info()
                             # update_all_events_info(today)
                             # #simulate fetching data for today
                             #actually done only once per day
-                            updated = True
+                            # updated = True
                             send_message(sender_id, "updated")
                         else:
                             send_message(sender_id, no_event_msg)
