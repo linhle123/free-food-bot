@@ -113,7 +113,7 @@ def webhook():
                         send_quick_reply_message(sender_id, "Hi there! Let's cut to the chase. When are you down to have some free food?")
                     elif (payload == 'events today'):
                         #send info for events on today
-                        if events_today:
+                        if len(events_today):
                             send_message(sender_id, "events today are:")
                             for event in events_today:
                                 send_event_info_new(sender_id, event)
@@ -121,7 +121,7 @@ def webhook():
                             send_message(sender_id, "The good news is the best things in life are free. The bad news is they're not available today. I'll make it up to you another time.")                            
                     elif (payload == 'events tomorrow'):
                         #send info for events on tomorrow
-                        if events_tomorrow:
+                        if len(events_tomorrow):
                             send_message(sender_id, "events tomorrow are:")
                             for event in events_tomorrow:
                                 send_event_info_new(sender_id, event)
