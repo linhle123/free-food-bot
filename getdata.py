@@ -13,13 +13,12 @@ import datetime
 import app
 
 #global var
-today = datetime.datetime.now()
+today = datetime.date.today()
 
 
 #return the anchorlink html page with free food event filter applied
 def get_free_food_events_page():
     #this line is for heroku deployment, can also use this if added phantomjs file to executable_path
-    #i.e. use "export PATH=$PATH:/home/linhle/phantomjs-2.1.1-linux-x86_64/bin/phantomjs"
     # driver = webdriver.Chrome(executable_path='/home/linhle/Desktop/chromedriver')
     # below is for use in heroku
     # https://github.com/heroku/heroku-buildpack-google-chrome/issues/26
@@ -45,8 +44,7 @@ def get_free_food_events_page():
             time.sleep(3) #wait for free food filter to take effect, this is stupid solution tho
             return driver.page_source
             # print(driver.find_element_by_id("event-discovery-list"))
-            # return driver.find_element_by_id("event-discovery-list").text
-            driver.close()
+            # driver.close()
 
 
 #return array of array containing details of free food events in each element
@@ -57,11 +55,9 @@ def get_free_food_events():
     #contains html of the list of free food events
     # events are the "a"" tags with href like this: href="/event/1629631"
     eventList = bsObj.findAll("a", {"href":re.compile("\/event\/")})
-    # print(eventList[0]['href'])
     #within the html of each event, find tags with string contents
     # eventDetails is an array of arrays, each element contains info for an event 
     
-    # eventDetails = [event.findAll(string=True) for event in eventList]
     eventDetails = []
     #can somehow use list comprehension to filter for eventDetail?
     for event in eventList:
@@ -70,10 +66,6 @@ def get_free_food_events():
         eventDetails.append(temp)
     
     return eventDetails
-   
-
-def get_free_food_events_hard_coded():
-    return [['Research Connections', 'Monday, January 8 at 12:00 PM CST', 'Light Hall', 'Learning', '/event/1629631'], ['Welcome Back Brunch!', 'Monday, January 8 at 11:00 AM CST', 'KC Potter Center', 'Social', '/event/1670361'], ['GCC Career Talk Series with Mason Ji', 'Tuesday, January 9 at 5:15 PM CST', 'Kissam MPR', 'Group Business', '/event/1671339'], ['Journal Club: Concussions and CTE (Chronic Traumatic Encephalopathy)', 'Wednesday, January 10 at 5:00 PM CST', 'Light Hall', 'Learning', '/event/1744861'], ['Literature, Arts, & Medicine: Cultural Series', 'Thursday, January 11 at 12:00 PM CST', 'Light Hall 208', 'Arts & Music', '/event/1614211'], ['[Wellness] January Social Rounds!', 'Friday, January 12 at 5:00 PM CST', 'Light Hall Student Lounge', 'Social', '/event/1692579'], ['2018 MLK Weekend of Service', 'Saturday, January 13 at 8:00 AM CST', 'Fisk University', 'Service', '/event/1643195'], ['APAMSA Mooncake Making Night', 'Saturday, January 13 at 6:00 PM CST', "Kate's Home", 'Cultural', '/event/1673020'], ['Gabbe Roars Into the New Year', 'Saturday, January 13 at 6:30 PM CST', "Dr. Allos's Home ", 'Social', '/event/1713544'], ['Health Guardians of America: Fitlifeflow Outreach Event', 'Tuesday, January 16 at 5:30 PM CST', 'Commons Atrium', 'Social', '/event/1671343'], ['Winning Strategies for the Global Health Case Competition ', 'Wednesday, January 17 at 5:00 PM CST', 'Buttrick Hall 202 ', 'Group Business', '/event/1671347'], ['TOM:Vanderbilt Makeathon', 'Friday, January 19 at 12:00 PM CST', "The Wond'ry", 'Service', '/event/1649716'], ['An Evening in Ecuador: MEDLIFE Public Health Fair', 'Thursday, January 25 at 5:00 PM CST', 'Kissam: Warren and More', 'Cultural', '/event/1671360'], ['GHHS Induction Ceremony', 'Thursday, January 25 at 6:00 PM CST', 'Student Life Center - Board of Trust Room (140)', 'Social', '/event/1652304'], ['Vandy Cooks - Warm Up with Soups', 'Friday, January 26 at 12:00 PM CST', 'Vanderbilt Recreation & Wellness Center', 'Learning', '/event/1676927']]
 
 
 
@@ -83,19 +75,6 @@ def convert_to_datetime(event_time):
     correct_datetime = given_datetime.replace(year=datetime.datetime.now().year)
     return correct_datetime
 
-#use list comprehension here instead    
-def get_events_tomorrow(events, today):
-    events_tomorrow = []
-    for event in events:
-        #this can be improved
-        if event[1].day == (today + datetime.timedelta(days=1)).day:
-            events_tomorrow.append(event)
-    return events_tomorrow
-
-# free_food_events = get_free_food_events_hard_coded()
-
-
-# myevent = free_food_events[3]
 
 def print_events_info():
     free_food_events = get_free_food_events()
@@ -106,7 +85,6 @@ def print_events_info():
         event_info = "{}\nTime: {}\nLocation: {}\n".format(
             event[0],event[1].strftime("%I:%M %p"),event[2])
         print(event_info)
-        # print("https://anchorlink.vanderbilt.edu",event[4],sep="")
 
 
 def get_events_on_date(events, date):
@@ -116,12 +94,19 @@ def get_events_on_date(events, date):
             events_on_date.append(event)
     return events_on_date
 
+#get events in this week
+def get_events_in_week(events):
+    start = today - datetime.timedelta(days=today.weekday())
+    end = start + datetime.timedelta(days=6)
+    events_in_week = []
+    for event in events:
+        if start <= event[1].day <= end:
+            events_in_week.append(event)
+    return events_in_week
+    
+
 #update the events of today and tomorrow
 def update_events_info():
-    # global events_today
-    # global events_tomorrow
-    # global free_food_events
-
     free_food_events = get_free_food_events()
     #convert datetime text to datetime objects
     for event in free_food_events:
@@ -132,13 +117,4 @@ def update_events_info():
     app.events_today = get_events_on_date(free_food_events, today)
     tomorrow = today + datetime.timedelta(days=1)
     app.events_tomorrow = get_events_on_date(free_food_events, tomorrow)
-
-# today = datetime.time(1,2,3)
-# today = datetime.date(2018, 1, 12)
-# tempday = datetime.datetime.now()
-# today_info = "today is " + tempday.strftime('%m/%d/%Y')
-# print(today_info)
-# events_tomorrow = get_events_tomorrow(free_food_events, today)
-
-# print(get_free_food_events_hard_coded())
-#print without extra space added, no separation
+    app.events_this_week = get_events_in_week(free_food_events)

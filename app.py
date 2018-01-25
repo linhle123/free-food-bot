@@ -15,10 +15,13 @@ app = Flask(__name__)
 
 #global values, to be updated every day
 updated = False #to prevent updating twice or more, will be faulty
-today = datetime.datetime.now()
+today = datetime.date.today()
 events_today = []
 events_tomorrow = []
 events_this_week = []
+RSVP_msg = "Note: Some events need RSVP, please check their details"
+no_event_msg = "There's no free food during this period. Please check again later."
+ask_period_msg = "When are you down to have some free food?"
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -34,7 +37,6 @@ def verify():
 
 @app.route('/', methods=['POST'])
 def webhook():
-    global today
     global updated
     # endpoint for processing incoming messaging events
 
@@ -60,30 +62,12 @@ def webhook():
                         # today_info = "Today is " + today.strftime('%m/%d/%Y')
                         if (payload == 'events today'):
                             #send info for events on today
-                            if len(events_today):
-                                send_message(sender_id, "events today are:")
-                                for event in events_today:
-                                    send_event_info(sender_id, event)
-                                send_message(sender_id, "Note: Some events need RSVP, please check their details")
-                            else:
-                                send_message(sender_id, "The good news is the best things in life are free. The bad news is they're not available today. I'll make it up to you another time.")                                                     
+                            respond(events_today, "this week", sender_id)     
                         elif (payload == 'events tomorrow'):
-                            if len(events_tomorrow):
-                                #send info for events on tomorrow
-                                send_message(sender_id, "events tomorrow are:")
-                                for event in events_tomorrow:
-                                    send_event_info(sender_id, event)
-                                send_message(sender_id, "Note: Some events need RSVP, please check their details")
-                                
-                            else:
-                                send_message(sender_id, "The good news is the best things in life are free. The bad news is they're not available tomorrow. I'll make it up to you another time.")                   
+                            respond(events_tomorrow, "tomorrow", sender_id)
+                                              
                         elif (payload == 'events this week'):
-                            if len(events_this_week):
-                                send_message(sender_id, "events this week are:")
-                                send_message(sender_id, "Note: Some events need RSVP, please check their details")                             
-                            else:
-                                # user_name = get_user_name(recipient_id)
-                                send_message(sender_id, "The good news is the best things in life are free. The bad news is they're not available this week. I'll make it up to you another time")                            
+                            respond(events_this_week, "this week", sender_id)
                     else:
                         if message_text == 'update' and not updated:#update information when we tell it to
                             getdata.update_events_info()
@@ -92,10 +76,10 @@ def webhook():
                             updated = True
                             send_message(sender_id, "updated")
                         else:
-                            send_message(sender_id, "I'm sorry I can't do much beyond letting you know where to find free food")
+                            send_message(sender_id, no_event_msg)
                     
                     #after getting user's preference, keep asking again`
-                    send_quick_reply_message(sender_id, "When are you down to have some free food?")
+                    send_quick_reply_message(sender_id, ask_period_msg)
                     
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
@@ -103,37 +87,21 @@ def webhook():
                 if messaging_event.get("optin"):  # optin confirmation
                     pass
 
-                if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
-                    payload = messaging_event['postback']['payload']
-                    sender_id = messaging_event["sender"]["id"]
-                    if (payload == 'first message sent'):
-                        send_quick_reply_message(sender_id, "Hi there! Let's cut to the chase. When are you down to have some free food?")
-                    elif (payload == 'events today'):
-                        #send info for events on today
-                        if len(events_today):
-                            send_message(sender_id, "events today are:")
-                            for event in events_today:
-                                send_event_info(sender_id, event)
-                        else:
-                            send_message(sender_id, "The good news is the best things in life are free. The bad news is they're not available today. I'll make it up to you another time.")                            
-                    elif (payload == 'events tomorrow'):
-                        #send info for events on tomorrow
-                        if len(events_tomorrow):
-                            send_message(sender_id, "events tomorrow are:")
-                            for event in events_tomorrow:
-                                send_event_info(sender_id, event)
-                        else:
-                            send_message(sender_id, "The good news is the best things in life are free. The bad news is they're not available tomorrow. I'll make it up to you another time.")                            
-                    elif (payload == 'events this week'):
-                        if len(events_this_week):
-                            send_message(sender_id, "events this week are:")
-                        else:
-                            send_message(sender_id, "The good news is the best things in life are free. The bad news is they're not available this week. I'll make it up to you another time.")                            
+                if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message                            
+                    pass
     return "ok", 200
 
 
 
-
+def respond(event_list, period, sender_id):
+    if len(event_list):
+        #send info for events on tomorrow
+        send_message(sender_id, "events {} are:".format(period))
+        for event in event_list:
+            send_event_info(sender_id, event)
+        send_message(sender_id, RSVP_msg)
+    else:
+        send_message(sender_id, no_event_msg) 
 
 # datetime given from data does not specify the year, need to add the correct year
 def convert_to_datetime(event_time):
@@ -142,34 +110,9 @@ def convert_to_datetime(event_time):
     return correct_datetime
 
 
-# def get_events_on_date(events, date):
-#     events_on_date = []
-#     for event in events:
-#         if event[1].day == (date).day:
-#             events_on_date.append(event)
-#     return events_on_date
-# get_free_food_events
-#this is called at the start of everyday, to update the info
-#to be given out to users
-#e.g what free food events for today are, for tomorrow are, for this week are
-# def update_all_events_info(today):
-#     global events_today
-#     global events_tomorrow
-#     # global free_food_events
-
-#     free_food_events = getdata.get_free_food_events()
-#     #convert datetime text to datetime objects
-#     for event in free_food_events:
-#         event[1] = convert_to_datetime(event[1])
-    
-#     #update events_today to contain events today
-#     events_today = get_events_on_date(free_food_events, today)
-#     tomorrow = today + datetime.timedelta(days=1)
-#     events_tomorrow = get_events_on_date(free_food_events, tomorrow)
-
 def send_event_info(recipient_id, event):
     event_info = "{}\nTime: {}\nLocation: {}\n".format(
-                    event[0],event[1].strftime("%I:%M %p"),event[2])
+                    event[0],event[1].strftime("%I:%M %p, %A"),event[2])
 
     # log("sending message to {recipient}: {text}".format(recipient=recipient_id, text="button message"))
 
