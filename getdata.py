@@ -107,6 +107,7 @@ def get_events_in_week(events):
 
 #update the events of today and tomorrow
 def update_events_info():
+    print("update event info")
     free_food_events = get_free_food_events()
     #convert datetime text to datetime objects
     for event in free_food_events:
@@ -118,3 +119,6 @@ def update_events_info():
     tomorrow = today + datetime.timedelta(days=1)
     app.events_tomorrow = get_events_on_date(free_food_events, tomorrow)
     app.events_this_week = get_events_in_week(free_food_events)
+
+
+update_events_info()
