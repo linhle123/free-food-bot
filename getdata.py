@@ -118,10 +118,6 @@ def get_events_on_date(events, date):
 
 #update the events of today and tomorrow
 def update_events_info():
-    # global events_today
-    # global events_tomorrow
-    # global free_food_events
-
     free_food_events = get_free_food_events()
     #convert datetime text to datetime objects
     for event in free_food_events:
@@ -129,16 +125,10 @@ def update_events_info():
     
     #update events_today to contain events today
     #variables are in app.py
+    print("today:", today)
     app.events_today = get_events_on_date(free_food_events, today)
     tomorrow = today + datetime.timedelta(days=1)
     app.events_tomorrow = get_events_on_date(free_food_events, tomorrow)
 
-# today = datetime.time(1,2,3)
-# today = datetime.date(2018, 1, 12)
-# tempday = datetime.datetime.now()
-# today_info = "today is " + tempday.strftime('%m/%d/%Y')
-# print(today_info)
-# events_tomorrow = get_events_tomorrow(free_food_events, today)
-
-# print(get_free_food_events_hard_coded())
-#print without extra space added, no separation
+#every time this file is run, run this function
+update_events_info()
