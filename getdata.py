@@ -10,6 +10,10 @@ import time
 import re
 import os
 import datetime
+import app
+
+#global var
+today = datetime.datetime.now()
 
 
 #return the anchorlink html page with free food event filter applied
@@ -100,10 +104,34 @@ def print_events_info():
         event[1] = convert_to_datetime(event[1])
     for event in free_food_events:
         event_info = "{}\nTime: {}\nLocation: {}\n".format(
-                    event[0],event[1].strftime("%I:%M %p"),event[2])
+            event[0],event[1].strftime("%I:%M %p"),event[2])
         print(event_info)
         # print("https://anchorlink.vanderbilt.edu",event[4],sep="")
+
+
+def get_events_on_date(events, date):
+    events_on_date = []
+    for event in events:
+        if event[1].day == (date).day:
+            events_on_date.append(event)
+    return events_on_date
+
+#update the events of today and tomorrow
+def update_events_info():
+    # global events_today
+    # global events_tomorrow
+    # global free_food_events
+
+    free_food_events = get_free_food_events()
+    #convert datetime text to datetime objects
+    for event in free_food_events:
+        event[1] = convert_to_datetime(event[1])
     
+    #update events_today to contain events today
+    #variables are in app.py
+    app.events_today = get_events_on_date(free_food_events, today)
+    tomorrow = today + datetime.timedelta(days=1)
+    app.events_tomorrow = get_events_on_date(free_food_events, tomorrow)
 
 # today = datetime.time(1,2,3)
 # today = datetime.date(2018, 1, 12)
