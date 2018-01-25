@@ -88,7 +88,6 @@ def get_events_tomorrow(events, today):
     events_tomorrow = []
     for event in events:
         #this can be improved
-    if len(events_today):
         if event[1].day == (today + datetime.timedelta(days=1)).day:
             events_tomorrow.append(event)
     return events_tomorrow
@@ -119,6 +118,10 @@ def get_events_on_date(events, date):
 
 #update the events of today and tomorrow
 def update_events_info():
+    # global events_today
+    # global events_tomorrow
+    # global free_food_events
+
     free_food_events = get_free_food_events()
     #convert datetime text to datetime objects
     for event in free_food_events:
@@ -126,13 +129,16 @@ def update_events_info():
     
     #update events_today to contain events today
     #variables are in app.py
-    # print("all events:")
-    # for event in free_food_events:
-    #     print(event)
-
     app.events_today = get_events_on_date(free_food_events, today)
-
+    tomorrow = today + datetime.timedelta(days=1)
     app.events_tomorrow = get_events_on_date(free_food_events, tomorrow)
 
-#every time this file is run, run this function
-# update_events_info()
+# today = datetime.time(1,2,3)
+# today = datetime.date(2018, 1, 12)
+# tempday = datetime.datetime.now()
+# today_info = "today is " + tempday.strftime('%m/%d/%Y')
+# print(today_info)
+# events_tomorrow = get_events_tomorrow(free_food_events, today)
+
+# print(get_free_food_events_hard_coded())
+#print without extra space added, no separation
