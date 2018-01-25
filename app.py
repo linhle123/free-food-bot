@@ -20,10 +20,6 @@ events_today = []
 events_tomorrow = []
 events_this_week = []
 
-#hard coded for test run
-# free_food_events = [['Research Connections', 'Monday, January 8 at 12:00 PM CST', 'Light Hall', 'Learning', '/event/1629631'], ['Welcome Back Brunch!', 'Monday, January 8 at 11:00 AM CST', 'KC Potter Center', 'Social', '/event/1670361'], ['GCC Career Talk Series with Mason Ji', 'Tuesday, January 9 at 5:15 PM CST', 'Kissam MPR', 'Group Business', '/event/1671339'], ['Journal Club: Concussions and CTE (Chronic Traumatic Encephalopathy)', 'Wednesday, January 10 at 5:00 PM CST', 'Light Hall', 'Learning', '/event/1744861'], ['Literature, Arts, & Medicine: Cultural Series', 'Thursday, January 11 at 12:00 PM CST', 'Light Hall 208', 'Arts & Music', '/event/1614211'], ['[Wellness] January Social Rounds!', 'Friday, January 12 at 5:00 PM CST', 'Light Hall Student Lounge', 'Social', '/event/1692579'], ['2018 MLK Weekend of Service', 'Saturday, January 13 at 8:00 AM CST', 'Fisk University', 'Service', '/event/1643195'], ['APAMSA Mooncake Making Night', 'Saturday, January 13 at 6:00 PM CST', "Kate's Home", 'Cultural', '/event/1673020'], ['Gabbe Roars Into the New Year', 'Saturday, January 13 at 6:30 PM CST', "Dr. Allos's Home ", 'Social', '/event/1713544'], ['Health Guardians of America: Fitlifeflow Outreach Event', 'Tuesday, January 16 at 5:30 PM CST', 'Commons Atrium', 'Social', '/event/1671343'], ['Winning Strategies for the Global Health Case Competition ', 'Wednesday, January 17 at 5:00 PM CST', 'Buttrick Hall 202 ', 'Group Business', '/event/1671347'], ['TOM:Vanderbilt Makeathon', 'Friday, January 19 at 12:00 PM CST', "The Wond'ry", 'Service', '/event/1649716'], ['An Evening in Ecuador: MEDLIFE Public Health Fair', 'Thursday, January 25 at 5:00 PM CST', 'Kissam: Warren and More', 'Cultural', '/event/1671360'], ['GHHS Induction Ceremony', 'Thursday, January 25 at 6:00 PM CST', 'Student Life Center - Board of Trust Room (140)', 'Social', '/event/1652304'], ['Vandy Cooks - Warm Up with Soups', 'Friday, January 26 at 12:00 PM CST', 'Vanderbilt Recreation & Wellness Center', 'Learning', '/event/1676927']]
-
-
 @app.route('/', methods=['GET'])
 def verify():
     # when the endpoint is registered as a webhook, it must echo back
@@ -43,7 +39,7 @@ def webhook():
     # endpoint for processing incoming messaging events
 
     data = request.get_json()
-    log(data)  # you may not want to log every incoming message in production, but it's good for testing
+    # log(data)  # you may not want to log every incoming message in production, but it's good for testing
 
     if data["object"] == "page":
 
@@ -67,7 +63,7 @@ def webhook():
                             if len(events_today):
                                 send_message(sender_id, "events today are:")
                                 for event in events_today:
-                                    send_event_info_new(sender_id, event)
+                                    send_event_info(sender_id, event)
                                 send_message(sender_id, "Note: Some events need RSVP, please check their details")
                             else:
                                 send_message(sender_id, "The good news is the best things in life are free. The bad news is they're not available today. I'll make it up to you another time.")                                                     
@@ -76,7 +72,7 @@ def webhook():
                                 #send info for events on tomorrow
                                 send_message(sender_id, "events tomorrow are:")
                                 for event in events_tomorrow:
-                                    send_event_info_new(sender_id, event)
+                                    send_event_info(sender_id, event)
                                 send_message(sender_id, "Note: Some events need RSVP, please check their details")
                                 
                             else:
@@ -117,7 +113,7 @@ def webhook():
                         if len(events_today):
                             send_message(sender_id, "events today are:")
                             for event in events_today:
-                                send_event_info_new(sender_id, event)
+                                send_event_info(sender_id, event)
                         else:
                             send_message(sender_id, "The good news is the best things in life are free. The bad news is they're not available today. I'll make it up to you another time.")                            
                     elif (payload == 'events tomorrow'):
@@ -125,7 +121,7 @@ def webhook():
                         if len(events_tomorrow):
                             send_message(sender_id, "events tomorrow are:")
                             for event in events_tomorrow:
-                                send_event_info_new(sender_id, event)
+                                send_event_info(sender_id, event)
                         else:
                             send_message(sender_id, "The good news is the best things in life are free. The bad news is they're not available tomorrow. I'll make it up to you another time.")                            
                     elif (payload == 'events this week'):
@@ -135,19 +131,8 @@ def webhook():
                             send_message(sender_id, "The good news is the best things in life are free. The bad news is they're not available this week. I'll make it up to you another time.")                            
     return "ok", 200
 
-def send_event_info(sender_id, event):
-    #give time in 12 hr format
-    event_info = "{}\nTime: {}\nLocation: {}\n".format(
-                    event[0],event[1].strftime("%I:%M %p"),event[2])
-    send_message(sender_id, event_info)
 
 
-def get_events_on_date(events, date):
-    events_on_date = []
-    for event in events:
-        if event[1].day == (date).day:
-            events_on_date.append(event)
-    return events_on_date
 
 
 # datetime given from data does not specify the year, need to add the correct year
@@ -156,30 +141,37 @@ def convert_to_datetime(event_time):
     correct_datetime = given_datetime.replace(year=datetime.datetime.now().year)
     return correct_datetime
 
+
+# def get_events_on_date(events, date):
+#     events_on_date = []
+#     for event in events:
+#         if event[1].day == (date).day:
+#             events_on_date.append(event)
+#     return events_on_date
 # get_free_food_events
 #this is called at the start of everyday, to update the info
 #to be given out to users
 #e.g what free food events for today are, for tomorrow are, for this week are
-def update_all_events_info(today):
-    global events_today
-    global events_tomorrow
-    # global free_food_events
+# def update_all_events_info(today):
+#     global events_today
+#     global events_tomorrow
+#     # global free_food_events
 
-    free_food_events = getdata.get_free_food_events()
-    #convert datetime text to datetime objects
-    for event in free_food_events:
-        event[1] = convert_to_datetime(event[1])
+#     free_food_events = getdata.get_free_food_events()
+#     #convert datetime text to datetime objects
+#     for event in free_food_events:
+#         event[1] = convert_to_datetime(event[1])
     
-    #update events_today to contain events today
-    events_today = get_events_on_date(free_food_events, today)
-    tomorrow = today + datetime.timedelta(days=1)
-    events_tomorrow = get_events_on_date(free_food_events, tomorrow)
+#     #update events_today to contain events today
+#     events_today = get_events_on_date(free_food_events, today)
+#     tomorrow = today + datetime.timedelta(days=1)
+#     events_tomorrow = get_events_on_date(free_food_events, tomorrow)
 
-def send_event_info_new(recipient_id, event):
+def send_event_info(recipient_id, event):
     event_info = "{}\nTime: {}\nLocation: {}\n".format(
                     event[0],event[1].strftime("%I:%M %p"),event[2])
 
-    log("sending message to {recipient}: {text}".format(recipient=recipient_id, text="button message"))
+    # log("sending message to {recipient}: {text}".format(recipient=recipient_id, text="button message"))
 
     params = {
         "access_token": os.environ["PAGE_ACCESS_TOKEN"]
@@ -211,28 +203,28 @@ def send_event_info_new(recipient_id, event):
         }
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
-    if r.status_code != 200:
-        log(r.status_code)
-        log(r.text)
+    # if r.status_code != 200:
+    #     log(r.status_code)
+    #     log(r.text)
 
 
 #can't get this to work, key error always
-def get_user_name(recipient_id):
-    log("getting user's name")
+# def get_user_name(recipient_id):
+#     log("getting user's name")
     
     
-    command = "https://graph.facebook.com/v2.6/<"+recipient_id+">?fields=first_name,last_name,profile_pic&access_token=EAACNsF2oEyABAEpRsZBkjELZCRUUuTZAJVRodGwM7OZCjgPquG4Bc8svqZBBdntgBxRmlIIsGM6dc3SzVo7NRG3pDU8HZB7ZAfZAUzJ01rZCHjXNQL3TaS8thGtrQMaT3axvj7kFaPflRcSkUtMV8gyHkLxhgHdk7I7EDOgtJZBPyUxjqno4yhbkH1"
+#     command = "https://graph.facebook.com/v2.6/<"+recipient_id+">?fields=first_name,last_name,profile_pic&access_token=EAACNsF2oEyABAEpRsZBkjELZCRUUuTZAJVRodGwM7OZCjgPquG4Bc8svqZBBdntgBxRmlIIsGM6dc3SzVo7NRG3pDU8HZB7ZAfZAUzJ01rZCHjXNQL3TaS8thGtrQMaT3axvj7kFaPflRcSkUtMV8gyHkLxhgHdk7I7EDOgtJZBPyUxjqno4yhbkH1"
 
-    data = requests.get(command) #.json() #need to convert Response object returned into json
-    log(data.content)
-    return data.json()["first_name"]
+#     data = requests.get(command) #.json() #need to convert Response object returned into json
+#     log(data.content)
+#     return data.json()["first_name"]
 
-    # curl -X GET "https://graph.facebook.com/v2.6/<PSID>?fields=first_name,last_name,profile_pic&access_token=<PAGE_ACCESS_TOKEN>"
+#     # curl -X GET "https://graph.facebook.com/v2.6/<PSID>?fields=first_name,last_name,profile_pic&access_token=<PAGE_ACCESS_TOKEN>"
 
 
 def send_quick_reply_message(recipient_id, message_text):
     
-    log("sending message to {recipient}: {text}".format(recipient=recipient_id, text="button message"))
+    # log("sending message to {recipient}: {text}".format(recipient=recipient_id, text="button message"))
 
     params = {
         "access_token": os.environ["PAGE_ACCESS_TOKEN"]
@@ -267,14 +259,14 @@ def send_quick_reply_message(recipient_id, message_text):
         }
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
-    if r.status_code != 200:
-        log(r.status_code)
-        log(r.text)
+    # if r.status_code != 200:
+    #     log(r.status_code)
+    #     log(r.text)
 
 
 def send_message(recipient_id, message_text):
 
-    log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
+    # log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
 
     params = {
         "access_token": os.environ["PAGE_ACCESS_TOKEN"]
@@ -291,9 +283,9 @@ def send_message(recipient_id, message_text):
         }
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
-    if r.status_code != 200:
-        log(r.status_code)
-        log(r.text)
+    # if r.status_code != 200:
+    #     log(r.status_code)
+    #     log(r.text)
 
 
 def log(msg, *args, **kwargs):  # simple wrapper for logging to stdout on heroku
@@ -309,4 +301,4 @@ def log(msg, *args, **kwargs):  # simple wrapper for logging to stdout on heroku
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
