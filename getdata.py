@@ -88,6 +88,7 @@ def get_events_tomorrow(events, today):
     events_tomorrow = []
     for event in events:
         #this can be improved
+    if len(events_today):
         if event[1].day == (today + datetime.timedelta(days=1)).day:
             events_tomorrow.append(event)
     return events_tomorrow
@@ -125,10 +126,13 @@ def update_events_info():
     
     #update events_today to contain events today
     #variables are in app.py
-    print("today:", today)
+    # print("all events:")
+    # for event in free_food_events:
+    #     print(event)
+
     app.events_today = get_events_on_date(free_food_events, today)
-    tomorrow = today + datetime.timedelta(days=1)
+
     app.events_tomorrow = get_events_on_date(free_food_events, tomorrow)
 
 #every time this file is run, run this function
-update_events_info()
+# update_events_info()
