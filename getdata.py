@@ -107,6 +107,8 @@ def get_events_in_week(events):
 
 #update the events of today and tomorrow
 def update_events_info():
+    global today
+    today = datetime.date.today()
     print("update event info")
     free_food_events = get_free_food_events()
     #convert datetime text to datetime objects
