@@ -66,32 +66,32 @@ def webhook():
                             try:
                                 f_today = open( "events_today.pkl", "rb" )
                             except EOFError:
-                                continue
+                                events_today =  []
                             else:
                                 events_today = pickle.load(f_today)
                                 f_today.close()
-                                print("#events today:", len(events_today))
-                                respond(events_today, "today", sender_id)     
+                            print("#events today:", len(events_today))
+                            respond(events_today, "today", sender_id)     
                         elif (payload == 'events tomorrow'):
                             try:
                                 f_tmr = open( "events_tomorrow.pkl", "rb" )
                             except EOFError:
-                                continue
+                                events_tomorrow = []
                             else:
                                 events_tomorrow = pickle.load(f_tmr)
                                 f_tmr.close()
-                                print("#events tmr:", len(events_tomorrow))
-                                respond(events_tomorrow, "tomorrow", sender_id)
+                            print("#events tmr:", len(events_tomorrow))
+                            respond(events_tomorrow, "tomorrow", sender_id)
                         elif (payload == 'events this week'):
                             try:
                                 f_week = open("events_this_week.pkl", "rb" )
                             except EOFError:
-                                continue
+                                events_this_week = []
                             else:
                                 events_this_week = pickle.load(f_week)
                                 f_week.close()
-                                print("#events this week:", len(events_this_week))
-                                respond(events_this_week, "this week", sender_id)
+                            print("#events this week:", len(events_this_week))
+                            respond(events_this_week, "this week", sender_id)
                     else:
                         if message_text == 'update' and not updated:#update information when we tell it to
                             getdata.update_events_info()
@@ -223,7 +223,7 @@ def send_quick_reply_message(recipient_id, message_text):
                 },
                 {
                     "content_type":"text",
-                    "title":"This week",
+                    "title":"Now until Sunday",
                     "payload":"events this week"
                 }
             ]
