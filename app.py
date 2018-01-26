@@ -4,9 +4,9 @@ import json
 # from datetime import datetime
 import datetime
 
-# import getdata 
+import getdata 
 # from misc import misc_function
-
+import pickle
 import requests
 from flask import Flask, request
 
@@ -63,18 +63,38 @@ def webhook():
                         # today_info = "Today is " + today.strftime('%m/%d/%Y')
                         if (payload == 'events today'):
                             #send info for events on today
-                            print("#events today:", len(events_today))
-                            respond(events_today, "today", sender_id)     
+                            try:
+                                f_today = open( "events_today.pkl", "rb" )
+                            except EOFError:
+                                continue
+                            else:
+                                events_today = pickle.load(f_today)
+                                f_today.close()
+                                print("#events today:", len(events_today))
+                                respond(events_today, "today", sender_id)     
                         elif (payload == 'events tomorrow'):
-                            print("#events tmr:", len(events_tomorrow))
-                            respond(events_tomorrow, "tomorrow", sender_id)
-                                              
+                            try:
+                                f_tmr = open( "events_tomorrow.pkl", "rb" )
+                            except EOFError:
+                                continue
+                            else:
+                                events_tomorrow = pickle.load(f_tmr)
+                                f_tmr.close()
+                                print("#events tmr:", len(events_tomorrow))
+                                respond(events_tomorrow, "tomorrow", sender_id)
                         elif (payload == 'events this week'):
-                            print("#events this week:", len(events_this_week))
-                            respond(events_this_week, "this week", sender_id)
+                            try:
+                                f_week = open("events_this_week.pkl", "rb" )
+                            except EOFError:
+                                continue
+                            else:
+                                events_this_week = pickle.load(f_week)
+                                f_week.close()
+                                print("#events this week:", len(events_this_week))
+                                respond(events_this_week, "this week", sender_id)
                     else:
                         if message_text == 'update' and not updated:#update information when we tell it to
-                            # getdata.update_events_info()
+                            getdata.update_events_info()
                             # update_all_events_info(today)
                             # #simulate fetching data for today
                             #actually done only once per day

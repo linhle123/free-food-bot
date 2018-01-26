@@ -10,7 +10,7 @@ import time
 import re
 import os
 import datetime
-import app
+import pickle
 
 #global var
 today = datetime.date.today()
@@ -110,15 +110,32 @@ def update_events_info():
     print("update event info")
     free_food_events = get_free_food_events()
     #convert datetime text to datetime objects
+    #convert navigable string of bs4 to str, else it breaks shelve module
     for event in free_food_events:
         event[1] = convert_to_datetime(event[1])
+        event[0] = str(event[0].encode('utf-8'))
+        event[2] = str(event[2].encode('utf-8'))
+        event[3] = str(event[3].encode('utf-8'))
     
     #update events_today to contain events today
     #variables are in app.py
-    app.events_today = get_events_on_date(free_food_events, today)
+    events_today = get_events_on_date(free_food_events, today)
+    f_today = open( "events_today.pkl", "wb" )
+    pickle.dump(events_today, f_today,protocol=2)#save to file
+    f_today.close()
+    print("#events today", len(events_today))
+
     tomorrow = today + datetime.timedelta(days=1)
-    app.events_tomorrow = get_events_on_date(free_food_events, tomorrow)
-    app.events_this_week = get_events_in_week(free_food_events)
+    f_tmr = open( "events_tomorrow.pkl", "wb" )
+    events_tomorrow = get_events_on_date(free_food_events, tomorrow)
+    pickle.dump(events_tomorrow, f_tmr, protocol=2)#save to file
+    f_tmr.close()
+    print("#events tmr", len(events_tomorrow))   
 
+    f_week = open( "events_this_week.pkl", "wb" )
+    events_this_week = get_events_in_week(free_food_events)
+    pickle.dump(events_this_week, f_week, protocol=2)#save to file
+    f_week.close()    
+    print("#events this week", len(events_this_week))
 
-update_events_info()
+# update_events_info()
