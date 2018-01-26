@@ -138,4 +138,4 @@ def update_events_info():
     f_week.close()    
     print("#events this week", len(events_this_week))
 
-update_events_info()
+# update_events_info()
