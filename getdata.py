@@ -42,9 +42,9 @@ def get_free_food_events_page():
             #click to filter for free food
             driver.find_element_by_xpath("//label[contains(text(), 'Free Food')]").click()
             time.sleep(3) #wait for free food filter to take effect, this is stupid solution tho
-            return driver.page_source
-            # print(driver.find_element_by_id("event-discovery-list"))
-            # driver.close()
+            html = driver.page_source
+            driver.close()
+            return html
 
 
 #return array of array containing details of free food events in each element
