@@ -3,6 +3,7 @@ import sys
 import json
 # from datetime import datetime
 import datetime
+import time
 
 import getdata 
 # from misc import misc_function
@@ -110,6 +111,7 @@ def webhook():
                     pass
 
                 if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message         
+                    #this is to reply after user tapped "Get started" button
                     payload = messaging_event['postback']['payload']
                     sender_id = messaging_event["sender"]["id"]
                     if (payload == 'first message sent'):
@@ -119,6 +121,9 @@ def webhook():
 
 
 def respond(event_list, period, sender_id):
+    #mark seen, then sleep a bit before replying. feels more real
+    mark_seen(sender_id)
+    time.sleep(2)
     if len(event_list):
         #send info for events on tomorrow
         send_message(sender_id, "events {} are:".format(period))
@@ -159,6 +164,7 @@ def send_event_info(recipient_id, event):
                     "template_type":"button",
                     "text":event_info,
                     "buttons":[
+                        #event[4] is part of the link to event on anchorlink
                         {
                             "type":"web_url",
                             "url":"https://anchorlink.vanderbilt.edu"+event[4],
@@ -230,6 +236,21 @@ def send_quick_reply_message(recipient_id, message_text):
     # if r.status_code != 200:
     #     log(r.status_code)
     #     log(r.text)
+
+def mark_seen(user_id):
+    params = {
+        "access_token": os.environ["PAGE_ACCESS_TOKEN"]
+    }
+    headers = {
+        "Content-Type": "application/json"
+    }
+    data = json.dumps({
+        "recipient": {
+            "id": user_id
+        },
+        "sender_action":"mark_seen"
+    })
+    r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
 
 
 def send_message(recipient_id, message_text):

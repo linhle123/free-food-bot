@@ -75,10 +75,6 @@ def get_free_food_events():
         event[2] = (event[2].encode('utf-8')).decode('utf-8')
         event[3] = (event[3].encode('utf-8')).decode('utf-8')   
         # event[4] is alr a str   
-    # event_info = "{}\n".format(event.encode('utf-8'))
-    # print(event_info)
-    # event = free_food_events[3]
-    # print(event[0].encode('utf-8'), type(event[0]))  
     return free_food_events
 
 
@@ -143,7 +139,7 @@ def update_events_info():
     print("#events {} days ahead".format(days_ahead), len(events_further_ahead))
 
 
-#do not call any functions here when push:
+#do not call any functions here when push, only for debugging:
 # free_food_events = get_free_food_events()
 # events_further_ahead = get_events_next_n_days(free_food_events)
 # print_events_info(events_further_ahead)
