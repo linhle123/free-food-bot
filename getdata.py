@@ -14,7 +14,8 @@ import pickle
 
 #global var
 today = datetime.date.today()
-
+#how many days ahead we wanna get events
+days_ahead = 4
 
 #return the anchorlink html page with free food event filter applied
 def get_free_food_events_page():
@@ -101,12 +102,13 @@ def get_events_on_date(events, date):
     return [event for event in events if event[1].day == (date).day]
 
 
-#get events from today until sunday this week
+#get events from today until days_ahead later
+#e.g. days_ahead = 1, then it's today and tmr
 #event[1] must be datetime object
-def get_events_until_sunday(events):
-    today = datetime.date.today()
-    sunday =  today - datetime.timedelta(days=today.weekday()) + datetime.timedelta(days=6)
-    return [event for event in events if today <= event[1].date() <= sunday]
+def get_events_next_n_days(events):
+    start = datetime.date.today()
+    end = start + datetime.timedelta(days=days_ahead)
+    return [event for event in events if start <= event[1].date() <= end]
 
 
 #update the events of today and tomorrow
@@ -130,17 +132,17 @@ def update_events_info():
     with open( "events_tomorrow.pkl", "wb" ) as f_tmr:
         pickle.dump(events_tomorrow, f_tmr, protocol=2)#save to file
 
-    events_until_sunday = get_events_until_sunday(free_food_events)
-    with open( "events_this_week.pkl", "wb" ) as f_week:
-        pickle.dump(events_until_sunday, f_week, protocol=2)#save to file
+    events_further_ahead = get_events_next_n_days(free_food_events)
+    with open( "events_further_ahead.pkl", "wb" ) as f_further:
+        pickle.dump(events_further_ahead, f_further, protocol=2)#save to file
 
     print("#events tmr", len(events_tomorrow))   
     print("#events today", len(events_today))
-    print("#events this week", len(events_until_sunday))
+    print("#events {} days ahead".format(days_ahead), len(events_further_ahead))
 
 
-#do not call any functions here:
+#do not call any functions here when push:
 # free_food_events = get_free_food_events()
-# print_events_info(free_food_events)
+# events_further_ahead = get_events_next_n_days(free_food_events)
+# print_events_info(events_further_ahead)
 # update_events_info()
-

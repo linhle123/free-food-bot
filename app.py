@@ -16,9 +16,6 @@ app = Flask(__name__)
 #global values, to be updated every day
 updated = False #to prevent updating twice or more, will be faulty
 today = datetime.date.today()
-events_today = []
-events_tomorrow = []
-events_this_week = []
 RSVP_msg = "Note: Some events need RSVP, please check their details"
 no_event_msg = "There's no free food during this period. Please check again later."
 ask_period_msg = "When are you down to have some free food?"
@@ -82,16 +79,16 @@ def webhook():
                                 f_tmr.close()
                             print("#events tmr:", len(events_tomorrow))
                             respond(events_tomorrow, "tomorrow", sender_id)
-                        elif (payload == 'events this week'):
+                        elif (payload == "events {} days ahead".format(getdata.days_ahead)):
                             try:
-                                f_week = open("events_this_week.pkl", "rb" )
+                                f_further = open("events_further_ahead.pkl", "rb" )
                             except EOFError:
-                                events_this_week = []
+                                events_further_ahead = []
                             else:
-                                events_this_week = pickle.load(f_week)
-                                f_week.close()
-                            print("#events this week:", len(events_this_week))
-                            respond(events_this_week, "this week", sender_id)
+                                events_further_ahead = pickle.load(f_further)
+                                f_further.close()
+                            print("#events {} days ahead".format(getdata.days_ahead), len(events_further_ahead))
+                            respond(events_further_ahead, "#{} days ahead".format(getdata.days_ahead), sender_id)
                     else:
                         if message_text == 'update' and not updated:#update information when we tell it to
                             getdata.update_events_info()
@@ -224,7 +221,7 @@ def send_quick_reply_message(recipient_id, message_text):
                 {
                     "content_type":"text",
                     "title":"Now until Sunday",
-                    "payload":"events this week"
+                    "payload":"events {} days ahead".format(getdata.days_ahead)
                 }
             ]
         }
