@@ -69,9 +69,12 @@ def get_free_food_events():
     #all details of each event are navigable strings
     #convert them to strings, event[1] should be datetime (for timing)
     for event in free_food_events:
-        for info in event:
-            info = str(info.encode('utf-8'))
+        event[0] = str(event[0].encode('utf-8'))
         event[1] = convert_to_datetime(event[1])
+        event[2] = str(event[2].encode('utf-8'))
+        event[3] = str(event[3].encode('utf-8'))   
+        #event[4] is alr a str     
+    
     return free_food_events
 
 
@@ -115,10 +118,12 @@ def update_events_info():
     
     #update events_today to contain events today
     #variables are in app.py
+
     events_today = get_events_on_date(free_food_events, today)
+    
     with open( "events_today.pkl", "wb" ) as f_today:
         pickle.dump(events_today, f_today,protocol=2)#save to file
-
+    
     tomorrow = today + datetime.timedelta(days=1)
     events_tomorrow = get_events_on_date(free_food_events, tomorrow)
     with open( "events_tomorrow.pkl", "wb" ) as f_tmr:
@@ -131,7 +136,6 @@ def update_events_info():
     print("#events tmr", len(events_tomorrow))   
     print("#events today", len(events_today))
     print("#events this week", len(events_until_sunday))
-
 
 
 update_events_info()
