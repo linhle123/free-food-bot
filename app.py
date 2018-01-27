@@ -121,9 +121,11 @@ def webhook():
 
 
 def respond(event_list, period, sender_id):
-    #mark seen, then sleep a bit before replying. feels more real
-    mark_seen(sender_id)
-    time.sleep(2)
+    #mark seen, then pretend to type before replying. feels more real
+    sender_action(sender_id, "mark_seen")
+    time.sleep(1)
+    sender_action(sender_id, "typing_on")
+    time.sleep(1)    
     if len(event_list):
         #send info for events on tomorrow
         send_message(sender_id, "events {} are:".format(period))
@@ -237,7 +239,7 @@ def send_quick_reply_message(recipient_id, message_text):
     #     log(r.status_code)
     #     log(r.text)
 
-def mark_seen(user_id):
+def sender_action(user_id, action):
     params = {
         "access_token": os.environ["PAGE_ACCESS_TOKEN"]
     }
@@ -248,7 +250,7 @@ def mark_seen(user_id):
         "recipient": {
             "id": user_id
         },
-        "sender_action":"mark_seen"
+        "sender_action":action
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
 
