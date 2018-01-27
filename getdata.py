@@ -134,7 +134,4 @@ def update_events_info():
 
 
 
-
-random_date = datetime.date.today() + datetime.timedelta(days=3)
-free_food_events = get_free_food_events()
-print_events_info(free_food_events)
+update_events_info()
