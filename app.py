@@ -220,7 +220,7 @@ def send_quick_reply_message(recipient_id, message_text):
                 },
                 {
                     "content_type":"text",
-                    "title":"Now until Sunday",
+                    "title":"{} days ahead".format(getdata.days_ahead),
                     "payload":"events {} days ahead".format(getdata.days_ahead)
                 }
             ]
