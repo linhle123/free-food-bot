@@ -69,14 +69,13 @@ def get_free_food_events():
     
     #all details of each event are navigable strings
     #convert them to strings, event[1] should be datetime (for timing)
-    #encode to get bytestring,then decode to get normal string
+    #encode to get bytestring,then decode to get unicode string
     for event in free_food_events:
         event[0] = (event[0].encode('utf-8')).decode('utf-8')
         event[1] = convert_to_datetime(event[1])
         event[2] = (event[2].encode('utf-8')).decode('utf-8')
         event[3] = (event[3].encode('utf-8')).decode('utf-8')   
-        #event[4] is alr a str     
-    
+        # event[4] is alr a str     
     return free_food_events
 
 
@@ -145,4 +144,4 @@ def update_events_info():
 # free_food_events = get_free_food_events()
 # events_further_ahead = get_events_next_n_days(free_food_events)
 # print_events_info(events_further_ahead)
-# update_events_info()
+update_events_info()

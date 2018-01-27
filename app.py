@@ -88,7 +88,7 @@ def webhook():
                                 events_further_ahead = pickle.load(f_further)
                                 f_further.close()
                             print("#events {} days ahead".format(getdata.days_ahead), len(events_further_ahead))
-                            respond(events_further_ahead, "#{} days ahead".format(getdata.days_ahead), sender_id)
+                            respond(events_further_ahead, "{} days ahead".format(getdata.days_ahead), sender_id)
                     else:
                         if message_text == 'update' and not updated:#update information when we tell it to
                             getdata.update_events_info()
