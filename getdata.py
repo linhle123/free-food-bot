@@ -147,4 +147,4 @@ def update_events_info():
 # free_food_events = get_free_food_events()
 # events_further_ahead = get_events_next_n_days(free_food_events)
 # print_events_info(events_further_ahead)
-update_events_info()
+# update_events_info()
