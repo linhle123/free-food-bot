@@ -137,7 +137,7 @@ def convert_to_datetime(event_time):
 
 def send_event_info(recipient_id, event):
     event_info = "{}\nTime: {}\nLocation: {}\n".format(
-                    event[0],event[1].strftime("%I:%M %p, %A"),event[2])
+                    event[0].encode('utf-8'),event[1].strftime("%I:%M %p, %A"),event[2].encode('utf-8'))
 
     # log("sending message to {recipient}: {text}".format(recipient=recipient_id, text="button message"))
 

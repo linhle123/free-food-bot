@@ -1,4 +1,3 @@
-# from urllib.request import urlopen
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
@@ -75,7 +74,11 @@ def get_free_food_events():
         event[1] = convert_to_datetime(event[1])
         event[2] = (event[2].encode('utf-8')).decode('utf-8')
         event[3] = (event[3].encode('utf-8')).decode('utf-8')   
-        # event[4] is alr a str     
+        # event[4] is alr a str   
+    # event_info = "{}\n".format(event.encode('utf-8'))
+    # print(event_info)
+    # event = free_food_events[3]
+    # print(event[0].encode('utf-8'), type(event[0]))  
     return free_food_events
 
 
@@ -91,7 +94,7 @@ def convert_to_datetime(event_time):
 def print_events_info(events):
     for event in events:
         event_info = "{}\nTime: {}\nLocation: {}\n".format(
-            event[0],event[1].strftime("%I:%M %p"),event[2])
+            event[0].encode('utf-8'),event[1].strftime("%I:%M %p"),event[2].encode('utf-8'))
         print(event_info)
     
 
