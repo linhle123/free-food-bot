@@ -138,4 +138,4 @@ def update_events_info():
     print("#events this week", len(events_until_sunday))
 
 
-update_events_info()
+# update_events_info()
