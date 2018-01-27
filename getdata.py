@@ -36,15 +36,15 @@ def get_free_food_events_page():
     finally:
         #click to open the perks option
         driver.find_element_by_xpath("//button[@aria-label='Open Perks List']").click()
-        try:
-            WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, "//label[contains(text(), 'Free Food')]")))
-        finally:
-            #click to filter for free food
-            driver.find_element_by_xpath("//label[contains(text(), 'Free Food')]").click()
-            time.sleep(3) #wait for free food filter to take effect, this is stupid solution tho
-            html = driver.page_source
-            driver.close()
-            return html
+    try: #wait until perks menu opens
+        WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, "//label[contains(text(), 'Free Food')]")))
+    finally:
+        #click to filter for free food
+        driver.find_element_by_xpath("//label[contains(text(), 'Free Food')]").click()
+        time.sleep(3) #wait for free food filter to take effect, this is stupid solution tho
+        html = driver.page_source
+        driver.close()
+        return html
 
 
 #return array of array containing details of free food events in each element
@@ -57,15 +57,22 @@ def get_free_food_events():
     eventList = bsObj.findAll("a", {"href":re.compile("\/event\/")})
     #within the html of each event, find tags with string contents
     # eventDetails is an array of arrays, each element contains info for an event 
-    
-    eventDetails = []
-    #can somehow use list comprehension to filter for eventDetail?
+    free_food_events = []
+    #each event is a bunch of html
+    #info we care about are the strings, so find all of those
+    #also we care about the link to event on anchorlink, so add the href attribute
     for event in eventList:
-        temp = event.findAll(string=True)
-        temp.append(event['href'])
-        eventDetails.append(temp)
+        event_info = event.findAll(string=True)
+        event_info.append(event['href'])
+        free_food_events.append(event_info)
     
-    return eventDetails
+    #all details of each event are navigable strings
+    #convert them to strings, event[1] should be datetime (for timing)
+    for event in free_food_events:
+        for info in event:
+            info = str(info.encode('utf-8'))
+        event[1] = convert_to_datetime(event[1])
+    return free_food_events
 
 
 
@@ -75,69 +82,59 @@ def convert_to_datetime(event_time):
     correct_datetime = given_datetime.replace(year=datetime.datetime.now().year)
     return correct_datetime
 
-
-def print_events_info():
-    free_food_events = get_free_food_events()
-    # convert time of event to datetime object
-    for event in free_food_events:
-        event[1] = convert_to_datetime(event[1])
-    for event in free_food_events:
+#pretty print info for each event in parameter
+#for testing purposes
+def print_events_info(events):
+    for event in events:
         event_info = "{}\nTime: {}\nLocation: {}\n".format(
             event[0],event[1].strftime("%I:%M %p"),event[2])
         print(event_info)
-
-
-def get_events_on_date(events, date):
-    events_on_date = []
-    for event in events:
-        if event[1].day == (date).day:
-            events_on_date.append(event)
-    return events_on_date
-
-#get events in this week
-def get_events_in_week(events):
-    start = today - datetime.timedelta(days=today.weekday())
-    end = start + datetime.timedelta(days=6)
-    events_in_week = []
-    for event in events:
-        if start <= event[1].date() <= end:
-            events_in_week.append(event)
-    return events_in_week
     
+
+#filter out events which are on the date provided as parameter
+#event[1] must be datetime object
+def get_events_on_date(events, date):
+    return [event for event in events if event[1].day == (date).day]
+
+
+#get events from today until sunday this week
+#event[1] must be datetime object
+def get_events_until_sunday(events):
+    today = datetime.date.today()
+    sunday =  today - datetime.timedelta(days=today.weekday()) + datetime.timedelta(days=6)
+    return [event for event in events if today <= event[1].date() <= sunday]
+
 
 #update the events of today and tomorrow
 def update_events_info():
+    print("daily update of event info")
+    #update global variable "today"
     global today
     today = datetime.date.today()
-    print("update event info")
     free_food_events = get_free_food_events()
-    #convert datetime text to datetime objects
-    #convert navigable string of bs4 to str, else it breaks shelve module
-    for event in free_food_events:
-        event[1] = convert_to_datetime(event[1])
-        event[0] = str(event[0].encode('utf-8'))
-        event[2] = str(event[2].encode('utf-8'))
-        event[3] = str(event[3].encode('utf-8'))
     
     #update events_today to contain events today
     #variables are in app.py
     events_today = get_events_on_date(free_food_events, today)
-    f_today = open( "events_today.pkl", "wb" )
-    pickle.dump(events_today, f_today,protocol=2)#save to file
-    f_today.close()
-    print("#events today", len(events_today))
+    with open( "events_today.pkl", "wb" ) as f_today:
+        pickle.dump(events_today, f_today,protocol=2)#save to file
 
     tomorrow = today + datetime.timedelta(days=1)
-    f_tmr = open( "events_tomorrow.pkl", "wb" )
     events_tomorrow = get_events_on_date(free_food_events, tomorrow)
-    pickle.dump(events_tomorrow, f_tmr, protocol=2)#save to file
-    f_tmr.close()
+    with open( "events_tomorrow.pkl", "wb" ) as f_tmr:
+        pickle.dump(events_tomorrow, f_tmr, protocol=2)#save to file
+
+    events_until_sunday = get_events_until_sunday(free_food_events)
+    with open( "events_this_week.pkl", "wb" ) as f_week:
+        pickle.dump(events_until_sunday, f_week, protocol=2)#save to file
+
     print("#events tmr", len(events_tomorrow))   
+    print("#events today", len(events_today))
+    print("#events this week", len(events_until_sunday))
 
-    f_week = open( "events_this_week.pkl", "wb" )
-    events_this_week = get_events_in_week(free_food_events)
-    pickle.dump(events_this_week, f_week, protocol=2)#save to file
-    f_week.close()    
-    print("#events this week", len(events_this_week))
 
-# update_events_info()
+
+
+random_date = datetime.date.today() + datetime.timedelta(days=3)
+free_food_events = get_free_food_events()
+print_events_info(free_food_events)
