@@ -63,6 +63,7 @@ def webhook():
                             #send info for events on today
                             try:
                                 f_today = open( "events_today.pkl", "rb" )
+                                print("read events from events_today.pkl")
                             except EOFError:
                                 events_today =  []
                             else:
@@ -73,6 +74,7 @@ def webhook():
                         elif (payload == 'events tomorrow'):
                             try:
                                 f_tmr = open( "events_tomorrow.pkl", "rb" )
+                                print("read events from events_tomorrow.pkl")                                
                             except EOFError:
                                 events_tomorrow = []
                             else:
@@ -83,6 +85,7 @@ def webhook():
                         elif (payload == "events {} days ahead".format(getdata.days_ahead)):
                             try:
                                 f_further = open("events_further_ahead.pkl", "rb" )
+                                print("read events from events_further_ahead.pkl")    
                             except EOFError:
                                 events_further_ahead = []
                             else:
