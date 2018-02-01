@@ -116,24 +116,28 @@ def update_events_info():
     global today
     today = datetime.date.today()
     free_food_events = get_free_food_events()
-    
+    print("scraped data done")
     #update events_today to contain events today
     #variables are in app.py
 
     events_today = get_events_on_date(free_food_events, today)
     
     with open( "events_today.pkl", "wb" ) as f_today:
+        print("write events today to file")
         pickle.dump(events_today, f_today,protocol=2)#save to file
     
     tomorrow = today + datetime.timedelta(days=1)
     events_tomorrow = get_events_on_date(free_food_events, tomorrow)
     with open( "events_tomorrow.pkl", "wb" ) as f_tmr:
+        print("write events tmr to file")        
         pickle.dump(events_tomorrow, f_tmr, protocol=2)#save to file
 
     events_further_ahead = get_events_next_n_days(free_food_events)
     with open( "events_further_ahead.pkl", "wb" ) as f_further:
+        print("write events further ahead to file")        
         pickle.dump(events_further_ahead, f_further, protocol=2)#save to file
-
+    
+    print("info scraped:")
     print("#events tmr", len(events_tomorrow))   
     print("#events today", len(events_today))
     print("#events {} days ahead".format(days_ahead), len(events_further_ahead))
