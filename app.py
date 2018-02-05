@@ -15,7 +15,6 @@ from flask import Flask, request
 app = Flask(__name__)
 
 #global values, to be updated every day
-updated = False #to prevent updating twice or more, will be faulty
 today = datetime.date.today()
 RSVP_msg = "Note: Some events need RSVP, please check their details"
 no_event_msg = "There's no free food during this period. Please check again later."
@@ -36,7 +35,6 @@ def verify():
 
 @app.route('/', methods=['POST'])
 def webhook():
-    global updated
     # endpoint for processing incoming messaging events
 
     data = request.get_json()
@@ -94,15 +92,7 @@ def webhook():
                             print("#events {} days ahead".format(getdata.days_ahead), len(events_further_ahead))
                             respond(events_further_ahead, "{} days ahead".format(getdata.days_ahead), sender_id)
                     else:
-                        if message_text == 'update' and not updated:#update information when we tell it to
-                            getdata.update_events_info()
-                            # update_all_events_info(today)
-                            # #simulate fetching data for today
-                            #actually done only once per day
-                            # updated = True
-                            send_message(sender_id, "updated")
-                        else:
-                            send_message(sender_id, no_event_msg)
+                        send_message(sender_id, no_event_msg)
                     
                     #after getting user's preference, keep asking again`
                     send_quick_reply_message(sender_id, ask_period_msg)

@@ -42,6 +42,11 @@ def get_free_food_events_page():
         #click to filter for free food
         driver.find_element_by_xpath("//label[contains(text(), 'Free Food')]").click()
         time.sleep(3) #wait for free food filter to take effect, this is stupid solution tho
+    try:    #load more events on page
+        WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, "//span[contains(text(), 'Load More')]")))
+    finally:
+        driver.find_element_by_xpath("//span[contains(text(), 'Load More')]").click()
+        time.sleep(3) #wait to load more, this is stupid solution tho        
         html = driver.page_source
         driver.close()
         return html
