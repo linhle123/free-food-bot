@@ -57,7 +57,7 @@ def webhook():
                         payload = message["quick_reply"]["payload"]
                         #check if data is scraped for today yet, only need to check 1 file
                         today = datetime.datetime.now().date()
-                        last_mod = last_modified_date(".apt").date()
+                        last_mod = last_modified_date("events_today.pkl").date()
                         if today != last_mod:#tell user to wait a bit when we scrape
                             send_message(sender_id, longer_than_usual)
                             getdata.update_events_info()
