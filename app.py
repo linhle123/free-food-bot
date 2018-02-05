@@ -14,12 +14,11 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-#global values, to be updated every day
-today = datetime.date.today()
 RSVP_msg = "Note: Some events need RSVP, please check their details"
 no_event_msg = "There's no free food during this period. Please check again later."
 ask_period_msg = "When are you down to have some free food?"
 greeting = "Hi there! Let's cut to the chase. When are you down to have some free food?"
+longer_than_usual = "Give me 5 seconds! I'm looking up the events for you"
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -56,7 +55,13 @@ def webhook():
                     #if user use quick reply
                     if message.get("quick_reply"):
                         payload = message["quick_reply"]["payload"]
-                        # today_info = "Today is " + today.strftime('%m/%d/%Y')
+                        #check if data is scraped for today yet, only need to check 1 file
+                        today = datetime.datetime.now().date()
+                        last_mod = last_modified_date("README.md").date()
+                        if today != last_mod:#tell user to wait a bit when we scrape
+                            send_message(sender_id, longer_than_usual)
+                            getdata.update_events_info()
+                        
                         if (payload == 'events today'):
                             #send info for events on today
                             try:
@@ -112,6 +117,9 @@ def webhook():
     return "ok", 200
 
 
+def last_modified_date(filename):
+    t = os.path.getmtime(filename)
+    return datetime.datetime.fromtimestamp(t)
 
 def respond(event_list, period, sender_id):
     #mark seen, then pretend to type before replying. feels more real

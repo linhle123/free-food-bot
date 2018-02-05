@@ -1,3 +1,3 @@
-import getdata
+# import getdata
 
-getdata.update_events_info()
+# getdata.update_events_info()
