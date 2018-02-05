@@ -9,12 +9,12 @@ import time
 import re
 import os
 import datetime
-import pickle
+import cPickle as pickle
 
 #global var
 today = datetime.date.today()
 #how many days ahead we wanna get events
-days_ahead = 4
+days_ahead = 3
 
 #return the anchorlink html page with free food event filter applied
 def get_free_food_events_page():

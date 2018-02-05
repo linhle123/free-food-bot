@@ -18,12 +18,12 @@ def last_modified_date(filename):
     t = os.path.getmtime(filename)
     return datetime.datetime.fromtimestamp(t)
 
-today = datetime.datetime.now()
+today = datetime.datetime.now().date()
+last_mod = last_modified_date("events_today.pkl").date()
 print(today.date())
-last_mod = last_modified_date("README.md").date()
-if today.date() == last_mod:
+if today == last_mod:
     print("same date")
 else:
-    print("modified {} days ago on {}".format((today.date() - last_mod).days, last_mod))
+    print("modified {} days ago on {}".format((today - last_mod).days, last_mod))
 
 # print(type(modification_date("events_today.pkl").date()))

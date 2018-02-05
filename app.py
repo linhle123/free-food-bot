@@ -7,7 +7,7 @@ import time
 
 import getdata 
 # from misc import misc_function
-import pickle
+import cPickle as pickle
 import requests
 from flask import Flask, request
 
@@ -58,6 +58,9 @@ def webhook():
                         #check if data is scraped for today yet, only need to check 1 file
                         today = datetime.datetime.now().date()
                         last_mod = last_modified_date("events_today.pkl").date()
+                        print("last_mod:", last_mod)
+                        print("today:", today)
+                        
                         if today != last_mod:#tell user to wait a bit when we scrape
                             send_message(sender_id, longer_than_usual)
                             getdata.update_events_info()
@@ -97,7 +100,8 @@ def webhook():
                             print("#events {} days ahead".format(getdata.days_ahead), len(events_further_ahead))
                             respond(events_further_ahead, "{} days ahead".format(getdata.days_ahead), sender_id)
                     else:
-                        send_message(sender_id, no_event_msg)
+                        getdata.update_events_info()                        
+                        send_message(sender_id, "updated")
                     
                     #after getting user's preference, keep asking again`
                     send_quick_reply_message(sender_id, ask_period_msg)
