@@ -60,7 +60,7 @@ def webhook():
                         last_mod = last_modified_date("events_today.pkl").date()
                         print("last_mod:", last_mod)
                         print("today:", today)
-                        
+                        time.sleep(10) #try to trigger resend behavior of Facebook
                         if today != last_mod:#tell user to wait a bit when we scrape
                             send_message(sender_id, longer_than_usual)
                             getdata.update_events_info()

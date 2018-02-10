@@ -1,29 +1,44 @@
-# import datetime
-# now = datetime.datetime.now()
-# print(now)
-# import getdata
-# getdata.print_events_info()
-# import datetime
+# import os
+# import urlparse
+# import psycopg2
 
-# start = datetime.date.today() + datetime.timedelta(days=today.weekday())
-# if today.date() <= start:
-#     print("here")
-# else:
-#     print("sdf")
-# today = datetime.date.today()
+# urlparse.uses_netloc.append("postgres")
+# url = urlparse.urlparse(os.environ["DATABASE_URL"])
+# conn = psycopg2.connect(
+#     database=url.path[1:],
+#     user=url.username,
+#     password=url.password,
+#     host=url.hostname,
+#     port=url.port
+# )
+# cur = conn.cursor()
+# print('PostgreSQL database version:')
+# cur.execute('SELECT version()')
 
-import os
-import datetime
-def last_modified_date(filename):
-    t = os.path.getmtime(filename)
-    return datetime.datetime.fromtimestamp(t)
 
-today = datetime.datetime.now().date()
-last_mod = last_modified_date("events_today.pkl").date()
-print(today.date())
-if today == last_mod:
-    print("same date")
-else:
-    print("modified {} days ago on {}".format((today - last_mod).days, last_mod))
-
-# print(type(modification_date("events_today.pkl").date()))
+import psycopg2
+import sys
+ 
+ 
+con = None
+ 
+try:
+    con = psycopg2.connect("host='localhost' dbname='testdb' user='pythonspot' password='password'")   
+    cur = con.cursor()
+    cur.execute("CREATE TABLE Products(Id INTEGER PRIMARY KEY, Name VARCHAR(20), Price INT)")
+    cur.execute("INSERT INTO Products VALUES(1,'Milk',5)")
+    cur.execute("INSERT INTO Products VALUES(2,'Sugar',7)")
+    cur.execute("INSERT INTO Products VALUES(3,'Coffee',3)")
+    cur.execute("INSERT INTO Products VALUES(4,'Bread',5)")
+    cur.execute("INSERT INTO Products VALUES(5,'Oranges',3)")
+    con.commit()
+except psycopg2.DatabaseError, e:
+    if con:
+        con.rollback()
+ 
+    print 'Error %s' % e    
+    sys.exit(1)
+ 
+finally:   
+    if con:
+        con.close()
