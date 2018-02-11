@@ -183,7 +183,10 @@ def send_event_info_carousel(recipient_id, event_list):
         "Content-Type": "application/json"
     }
     event = event_list[0]
+    event1 = event_list[1]
     print("the event is ", event)
+    print("the event is ", event1)
+    
     # elements = getEventsCarousel(event_list)
     data = json.dumps({
         "recipient": {
@@ -194,25 +197,32 @@ def send_event_info_carousel(recipient_id, event_list):
                 "type":"template",
                 "payload":{
                     "template_type":"generic",
-                    "elements": [{
-                        "title":event[0].encode('utf-8'),
-                        "image_url":"https://www.google.com/",
-                        "subtitle":event[1].strftime("%I:%M %p"),
-                        "default_action": {
-                            "type": "web_url",
-                            "url": "https://www.quora.com/",
-                            "webview_height_ratio": "tall",
-                            "fallback_url": "https://www.google.com/"
+                    "elements": [
+                        {
+                            "title":event[0].encode('utf-8'),
+                            "subtitle":event[1].strftime("%I:%M %p"),
+                            "buttons":[
+                                {
+                                    "type":"web_url",
+                                    "url":"https://anchorlink.vanderbilt.edu"+event[4],
+                                    "title":"Details",
+                                    "webview_height_ratio": "compact",
+                                }          
+                            ]      
                         },
-                        "buttons":[
-                            {
-                                "type":"web_url",
-                                "url":"https://anchorlink.vanderbilt.edu"+event[4],
-                                "title":"Details",
-                                "webview_height_ratio": "compact",
-                            }          
-                        ]      
-                    }] 
+                        {
+                            "title":event1[0].encode('utf-8'),
+                            "subtitle":event1[1].strftime("%I:%M %p"),
+                            "buttons":[
+                                {
+                                    "type":"web_url",
+                                    "url":"https://anchorlink.vanderbilt.edu"+event1[4],
+                                    "title":"Details",
+                                    "webview_height_ratio": "compact",
+                                }          
+                            ]      
+                        }
+                    ] 
                 }
             }
         }
