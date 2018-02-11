@@ -155,7 +155,7 @@ def getEventsCarousel(events):
         for event in chunk:
             event_info = {
                     "title":event[0].encode('utf-8'),
-                    "subtitle":event[1].strftime("%I:%M %p, %A"),
+                    "subtitle":event[1].strftime("%I:%M %p, %a") + "\n" + event[2].encode('utf-8'),
                     "default_action": {
                         "type":"web_url",
                         "url":"https://anchorlink.vanderbilt.edu"+event[4],
