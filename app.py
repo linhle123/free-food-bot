@@ -94,8 +94,7 @@ def webhook():
                             except EOFError:
                                 events_further_ahead = []
                             else:
-                                # events_further_ahead = pickle.load(f_further)
-                                events_further_ahead = [[u'Social Justice & the Legal Profession Series: Legal Aid Lawyering for Social Justice', datetime.datetime(2018, 2, 20, 12, 0), u'Social Justice & the Legal Profession Series: Legal Aid Lawyering for Social Justice', u'Learning', u'/event/1813743']]
+                                events_further_ahead = pickle.load(f_further)
                                 f_further.close()
                             print("#events {} days ahead".format(getdata.days_ahead), len(events_further_ahead))
                             respond(events_further_ahead, "{} days ahead".format(getdata.days_ahead), sender_id)
@@ -132,12 +131,9 @@ def respond(event_list, period, sender_id):
     sender_action(sender_id, "typing_on")
     time.sleep(0.5)    
     if len(event_list):
-        #send info for events on tomorrow
-        send_message(sender_id, "events {} are:".format(period))
+        # send_message(sender_id, "events {} are:".format(period))
         send_event_info_carousel(sender_id, event_list) #list events in group of carousel
-        # for event in event_list:
-        #     send_event_info(sender_id, event)
-        send_message(sender_id, RSVP_msg)
+        # send_message(sender_id, RSVP_msg)
     else:
         send_message(sender_id, no_event_msg) 
 
