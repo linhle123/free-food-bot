@@ -169,6 +169,7 @@ def getEventsCarousel(events):
             ]      
         }
         elements.append(event)
+    print("there should be {} events in carousel".format(len(elements)))
     return elements
 
 #send group of 10 carousel items
@@ -181,8 +182,9 @@ def send_event_info_carousel(recipient_id, event_list):
     headers = {
         "Content-Type": "application/json"
     }
-
-    elements = getEventsCarousel(event_list)
+    event = event_list[0]
+    print("the event is ", event)
+    # elements = getEventsCarousel(event_list)
     data = json.dumps({
         "recipient": {
             "id": recipient_id
@@ -192,7 +194,25 @@ def send_event_info_carousel(recipient_id, event_list):
                 "type":"template",
                 "payload":{
                     "template_type":"generic",
-                    "elements": elements 
+                    "elements": {
+                        "title":event[0].encode('utf-8'),
+                        "image_url":"https://www.google.com/",
+                        "subtitle":event[1].strftime("%I:%M %p"),
+                        "default_action": {
+                            "type": "web_url",
+                            "url": "https://www.quora.com/",
+                            "webview_height_ratio": "tall",
+                            "fallback_url": "https://www.google.com/"
+                        },
+                        "buttons":[
+                            {
+                                "type":"web_url",
+                                "url":"https://anchorlink.vanderbilt.edu"+event[4],
+                                "title":"Details",
+                                "webview_height_ratio": "compact",
+                            }          
+                        ]      
+                    } 
                 }
             }
         }
