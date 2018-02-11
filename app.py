@@ -194,7 +194,7 @@ def send_event_info_carousel(recipient_id, event_list):
                 "type":"template",
                 "payload":{
                     "template_type":"generic",
-                    "elements": {
+                    "elements": [{
                         "title":event[0].encode('utf-8'),
                         "image_url":"https://www.google.com/",
                         "subtitle":event[1].strftime("%I:%M %p"),
@@ -212,7 +212,7 @@ def send_event_info_carousel(recipient_id, event_list):
                                 "webview_height_ratio": "compact",
                             }          
                         ]      
-                    } 
+                    }] 
                 }
             }
         }
