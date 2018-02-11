@@ -155,14 +155,11 @@ def getEventsCarousel(events):
             event_info = {
                     "title":event[0].encode('utf-8'),
                     "subtitle":event[1].strftime("%I:%M %p"),
-                    "buttons":[
-                        {
-                            "type":"web_url",
-                            "url":"https://anchorlink.vanderbilt.edu"+event[4],
-                            "title":"Details",
-                            "webview_height_ratio": "compact",
-                        }          
-                    ]      
+                    "default_action": {
+                        "type":"web_url",
+                        "url":"https://anchorlink.vanderbilt.edu"+event[4],
+                        "webview_height_ratio": "compact",
+                    }      
                 }
             event_group.append(event_info)
         event_groups.append(event_group)
