@@ -157,7 +157,6 @@ def formatEventsCarousel(events):
                     "default_action": {
                         "type": "web_url",
                         "url": "https://anchorlink.vanderbilt.edu"+event[4],
-                        "messenger_extensions": true,
                         "webview_height_ratio": "compact",
                         "fallback_url": "https://anchorlink.vanderbilt.edu/events"
                     }    
