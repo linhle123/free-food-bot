@@ -172,7 +172,7 @@ def getEventsCarousel(events):
     return elements
 
 #send group of 10 carousel items
-def send_event_info_carousel(sender_id, event_list):
+def send_event_info_carousel(recipient_id, event_list):
     # event_info = "{}\nTime: {}\nLocation: {}\n".format(
     #                 event[0].encode('utf-8'),event[1].strftime("%I:%M %p, %A"),event[2].encode('utf-8'))
     params = {
