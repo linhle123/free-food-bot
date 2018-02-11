@@ -10,8 +10,8 @@ import re
 import datetime
 import cPickle as pickle
 import os
-import urlparse
-import psycopg2
+# import urlparse
+# import psycopg2
 
 # urlparse.uses_netloc.append("postgres")
 # url = urlparse.urlparse(os.environ["DATABASE_URL"])
@@ -163,7 +163,7 @@ def update_events_info():
 
 #do not call any functions here when push, only for debugging:
 # free_food_events = get_free_food_events()
-
+# print(free_food_events)
 # print_events_info(free_food_events)
 # events_further_ahead = get_events_next_n_days(free_food_events)
 # print_events_info(events_further_ahead)

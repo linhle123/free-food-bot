@@ -147,87 +147,54 @@ def convert_to_datetime(event_time):
     return correct_datetime
 
 def getEventsCarousel(events):
-    elements = []
-    for event in events:
-        event = {
-            "title":event[0].encode('utf-8'),
-            "image_url":"https://www.google.com/",
-            "subtitle":event[1].strftime("%I:%M %p"),
-            "default_action": {
-                "type": "web_url",
-                "url": "https://www.quora.com/",
-                "webview_height_ratio": "tall",
-                "fallback_url": "https://www.google.com/"
-            },
-            "buttons":[
-                {
-                    "type":"web_url",
-                    "url":"https://anchorlink.vanderbilt.edu"+event[4],
-                    "title":"Details",
-                    "webview_height_ratio": "compact",
-                }          
-            ]      
-        }
-        elements.append(event)
-    print("there should be {} events in carousel".format(len(elements)))
-    return elements
+    chunks = [events[x:x+10] for x in xrange(0, len(events), 10)]
+    event_groups = []
+    for chunk in chunks:
+        event_group = []
+        for event in chunk:
+            event_info = {
+                    "title":event[0].encode('utf-8'),
+                    "subtitle":event[1].strftime("%I:%M %p"),
+                    "buttons":[
+                        {
+                            "type":"web_url",
+                            "url":"https://anchorlink.vanderbilt.edu"+event[4],
+                            "title":"Details",
+                            "webview_height_ratio": "compact",
+                        }          
+                    ]      
+                }
+            event_group.append(event_info)
+        event_groups.append(event_group)
+    return event_groups
 
 #send group of 10 carousel items
 def send_event_info_carousel(recipient_id, event_list):
-    # event_info = "{}\nTime: {}\nLocation: {}\n".format(
-    #                 event[0].encode('utf-8'),event[1].strftime("%I:%M %p, %A"),event[2].encode('utf-8'))
     params = {
         "access_token": os.environ["PAGE_ACCESS_TOKEN"]
     }
     headers = {
         "Content-Type": "application/json"
     }
-    event = event_list[0]
-    event1 = event_list[1]
-    print("the event is ", event)
-    print("the event is ", event1)
     
-    # elements = getEventsCarousel(event_list)
-    data = json.dumps({
-        "recipient": {
-            "id": recipient_id
-        },
-        "message": {
-            "attachment":{
-                "type":"template",
-                "payload":{
-                    "template_type":"generic",
-                    "elements": [
-                        {
-                            "title":event[0].encode('utf-8'),
-                            "subtitle":event[1].strftime("%I:%M %p"),
-                            "buttons":[
-                                {
-                                    "type":"web_url",
-                                    "url":"https://anchorlink.vanderbilt.edu"+event[4],
-                                    "title":"Details",
-                                    "webview_height_ratio": "compact",
-                                }          
-                            ]      
-                        },
-                        {
-                            "title":event1[0].encode('utf-8'),
-                            "subtitle":event1[1].strftime("%I:%M %p"),
-                            "buttons":[
-                                {
-                                    "type":"web_url",
-                                    "url":"https://anchorlink.vanderbilt.edu"+event1[4],
-                                    "title":"Details",
-                                    "webview_height_ratio": "compact",
-                                }          
-                            ]      
-                        }
-                    ] 
+    event_groups = getEventsCarousel(event_list)
+    
+    for event_group in event_groups:
+        data = json.dumps({
+            "recipient": {
+                "id": recipient_id
+            },
+            "message": {
+                "attachment":{
+                    "type":"template",
+                    "payload":{
+                        "template_type":"generic",
+                        "elements": event_group
+                    }
                 }
             }
-        }
-    })
-    r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
+        })
+        r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
     
 
 def send_event_info(recipient_id, event):
