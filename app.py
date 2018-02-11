@@ -196,8 +196,6 @@ def send_event_info(recipient_id, event):
     event_info = "{}\nTime: {}\nLocation: {}\n".format(
                     event[0].encode('utf-8'),event[1].strftime("%I:%M %p, %A"),event[2].encode('utf-8'))
 
-    # log("sending message to {recipient}: {text}".format(recipient=recipient_id, text="button message"))
-
     params = {
         "access_token": os.environ["PAGE_ACCESS_TOKEN"]
     }
@@ -229,29 +227,10 @@ def send_event_info(recipient_id, event):
         }
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
-    # if r.status_code != 200:
-    #     log(r.status_code)
-    #     log(r.text)
 
-
-#can't get this to work, key error always
-# def get_user_name(recipient_id):
-#     log("getting user's name")
-    
-    
-#     command = "https://graph.facebook.com/v2.6/<"+recipient_id+">?fields=first_name,last_name,profile_pic&access_token=EAACNsF2oEyABAEpRsZBkjELZCRUUuTZAJVRodGwM7OZCjgPquG4Bc8svqZBBdntgBxRmlIIsGM6dc3SzVo7NRG3pDU8HZB7ZAfZAUzJ01rZCHjXNQL3TaS8thGtrQMaT3axvj7kFaPflRcSkUtMV8gyHkLxhgHdk7I7EDOgtJZBPyUxjqno4yhbkH1"
-
-#     data = requests.get(command) #.json() #need to convert Response object returned into json
-#     log(data.content)
-#     return data.json()["first_name"]
-
-#     # curl -X GET "https://graph.facebook.com/v2.6/<PSID>?fields=first_name,last_name,profile_pic&access_token=<PAGE_ACCESS_TOKEN>"
 
 
 def send_quick_reply_message(recipient_id, message_text):
-    
-    # log("sending message to {recipient}: {text}".format(recipient=recipient_id, text="button message"))
-
     params = {
         "access_token": os.environ["PAGE_ACCESS_TOKEN"]
     }
@@ -285,9 +264,6 @@ def send_quick_reply_message(recipient_id, message_text):
         }
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
-    # if r.status_code != 200:
-    #     log(r.status_code)
-    #     log(r.text)
 
 def sender_action(user_id, action):
     params = {
@@ -306,9 +282,6 @@ def sender_action(user_id, action):
 
 
 def send_message(recipient_id, message_text):
-
-    # log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
-
     params = {
         "access_token": os.environ["PAGE_ACCESS_TOKEN"]
     }
@@ -324,9 +297,6 @@ def send_message(recipient_id, message_text):
         }
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
-    # if r.status_code != 200:
-    #     log(r.status_code)
-    #     log(r.text)
 
 
 def log(msg, *args, **kwargs):  # simple wrapper for logging to stdout on heroku
