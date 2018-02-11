@@ -94,7 +94,8 @@ def webhook():
                             except EOFError:
                                 events_further_ahead = []
                             else:
-                                events_further_ahead = pickle.load(f_further)
+                                # events_further_ahead = pickle.load(f_further)
+                                events_further_ahead = [[u'Social Justice & the Legal Profession Series: Legal Aid Lawyering for Social Justice', datetime.datetime(2018, 2, 20, 12, 0), u'Social Justice & the Legal Profession Series: Legal Aid Lawyering for Social Justice', u'Learning', u'/event/1813743']]
                                 f_further.close()
                             print("#events {} days ahead".format(getdata.days_ahead), len(events_further_ahead))
                             respond(events_further_ahead, "{} days ahead".format(getdata.days_ahead), sender_id)
@@ -154,7 +155,7 @@ def getEventsCarousel(events):
         for event in chunk:
             event_info = {
                     "title":event[0].encode('utf-8'),
-                    "subtitle":event[1].strftime("%I:%M %p"),
+                    "subtitle":event[1].strftime("%I:%M %p, %A"),
                     "default_action": {
                         "type":"web_url",
                         "url":"https://anchorlink.vanderbilt.edu"+event[4],
