@@ -79,11 +79,11 @@ def webhook():
                         elif (payload == 'events tomorrow'):
                             try:
                                 f_tmr = open( "events_tomorrow.pkl", "rb" )
-                                print("read events from events_tomorrow.pkl")                                
+                                print("read events from events_tomorrow.pkl")
+                                events_tomorrow = pickle.load(f_tmr)
                             except EOFError:
                                 events_tomorrow = []
                             else:
-                                events_tomorrow = pickle.load(f_tmr)
                                 f_tmr.close()
                             print("#events tmr:", len(events_tomorrow))
                             respond(events_tomorrow, "tomorrow", sender_id)
@@ -91,10 +91,10 @@ def webhook():
                             try:
                                 f_further = open("events_further_ahead.pkl", "rb" )
                                 print("read events from events_further_ahead.pkl")    
+                                events_further_ahead = pickle.load(f_further)
                             except EOFError:
                                 events_further_ahead = []
                             else:
-                                events_further_ahead = pickle.load(f_further)
                                 f_further.close()
                             print("#events {} days ahead".format(getdata.days_ahead), len(events_further_ahead))
                             respond(events_further_ahead, "{} days ahead".format(getdata.days_ahead), sender_id)
