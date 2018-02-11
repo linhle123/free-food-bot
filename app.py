@@ -189,7 +189,7 @@ def send_event_info_carousel(recipient_id, event_list):
                     "type":"template",
                     "payload":{
                         "template_type":"generic",
-                        "image_aspect_ratio":"square"
+                        "image_aspect_ratio":"square",
                         "elements": event_group
                     }
                 }
