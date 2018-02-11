@@ -1,44 +1,33 @@
-# import os
-# import urlparse
-# import psycopg2
-
-# urlparse.uses_netloc.append("postgres")
-# url = urlparse.urlparse(os.environ["DATABASE_URL"])
-# conn = psycopg2.connect(
-#     database=url.path[1:],
-#     user=url.username,
-#     password=url.password,
-#     host=url.hostname,
-#     port=url.port
-# )
-# cur = conn.cursor()
-# print('PostgreSQL database version:')
-# cur.execute('SELECT version()')
+# import json
+# import getdata
 
 
-import psycopg2
-import sys
- 
- 
-con = None
- 
-try:
-    con = psycopg2.connect("host='localhost' dbname='testdb' user='pythonspot' password='password'")   
-    cur = con.cursor()
-    cur.execute("CREATE TABLE Products(Id INTEGER PRIMARY KEY, Name VARCHAR(20), Price INT)")
-    cur.execute("INSERT INTO Products VALUES(1,'Milk',5)")
-    cur.execute("INSERT INTO Products VALUES(2,'Sugar',7)")
-    cur.execute("INSERT INTO Products VALUES(3,'Coffee',3)")
-    cur.execute("INSERT INTO Products VALUES(4,'Bread',5)")
-    cur.execute("INSERT INTO Products VALUES(5,'Oranges',3)")
-    con.commit()
-except psycopg2.DatabaseError, e:
-    if con:
-        con.rollback()
- 
-    print 'Error %s' % e    
-    sys.exit(1)
- 
-finally:   
-    if con:
-        con.close()
+# def getEventsCarousel(events):
+#     elements = []
+#     for event in events:
+#         event = {
+#             "title":event[0].encode('utf-8'),
+#             "image_url":"https://www.google.com/",
+#             "subtitle":event[1].strftime("%I:%M %p"),
+#             "default_action": {
+#                 "type": "web_url",
+#                 "url": "https://www.quora.com/",
+#                 "webview_height_ratio": "tall",
+#                 "fallback_url": "https://www.google.com/"
+#             },
+#             "buttons":[
+#                 {
+#                     "type":"web_url",
+#                     "url":"https://anchorlink.vanderbilt.edu"+event[4],
+#                     "title":"Details",
+#                     "webview_height_ratio": "compact",
+#                 }          
+#             ]      
+#         }
+#         elements.append(event)
+#     return elements
+
+# free_food_events = getdata.get_free_food_events()
+# data = json.dumps(getEventsCarousel(free_food_events))
+
+# print(data)
