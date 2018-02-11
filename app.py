@@ -69,10 +69,10 @@ def webhook():
                             try:
                                 f_today = open( "events_today.pkl", "rb" )
                                 print("read events from events_today.pkl")
+                                events_today = pickle.load(f_today)
                             except EOFError:
                                 events_today =  []
                             else:
-                                events_today = pickle.load(f_today)
                                 f_today.close()
                             print("#events today:", len(events_today))
                             respond(events_today, "today", sender_id)     
