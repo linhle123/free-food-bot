@@ -14,7 +14,7 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-RSVP_msg = "Note: Some events need RSVP, please check their details"
+RSVP_msg = "Note: Some events need RSVP, please click on the events to check their details"
 no_event_msg = "There's no free food during this period. Please check again later."
 ask_period_msg = "When are you down to have some free food?"
 greeting = "Hi there! Let's cut to the chase. When are you down to have some free food?"
@@ -132,7 +132,6 @@ def respond(event_list, period, sender_id):
     time.sleep(0.5)    
     if len(event_list):
         #send info for events on tomorrow
-        send_message(sender_id, "events {} are:".format(period))
         send_event_info_carousel(sender_id, event_list) #list events in group of carousel
         # for event in event_list:
         #     send_event_info(sender_id, event)
@@ -146,7 +145,7 @@ def convert_to_datetime(event_time):
     correct_datetime = given_datetime.replace(year=datetime.datetime.now().year)
     return correct_datetime
 
-def getEventsCarousel(events):
+def formatEventsCarousel(events):
     chunks = [events[x:x+10] for x in xrange(0, len(events), 10)]
     event_groups = []
     for chunk in chunks:
@@ -154,15 +153,14 @@ def getEventsCarousel(events):
         for event in chunk:
             event_info = {
                     "title":event[0].encode('utf-8'),
-                    "subtitle":event[1].strftime("%I:%M %p"),
-                    "buttons":[
-                        {
-                            "type":"web_url",
-                            "url":"https://anchorlink.vanderbilt.edu"+event[4],
-                            "title":"Details",
-                            "webview_height_ratio": "compact",
-                        }          
-                    ]      
+                    "subtitle":event[1].strftime("%I:%M %p, %A"),
+                    "default_action": {
+                        "type": "web_url",
+                        "url": "https://anchorlink.vanderbilt.edu"+event[4],
+                        "messenger_extensions": true,
+                        "webview_height_ratio": "compact",
+                        "fallback_url": "https://anchorlink.vanderbilt.edu/events"
+                    }    
                 }
             event_group.append(event_info)
         event_groups.append(event_group)
@@ -177,7 +175,7 @@ def send_event_info_carousel(recipient_id, event_list):
         "Content-Type": "application/json"
     }
     
-    event_groups = getEventsCarousel(event_list)
+    event_groups = formatEventsCarousel(event_list)
     
     for event_group in event_groups:
         data = json.dumps({
@@ -189,6 +187,7 @@ def send_event_info_carousel(recipient_id, event_list):
                     "type":"template",
                     "payload":{
                         "template_type":"generic",
+                        "image_aspect_ratio":"square",
                         "elements": event_group
                     }
                 }
