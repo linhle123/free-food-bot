@@ -19,6 +19,7 @@ no_event_msg = "There's no free food during this period. Please check again late
 ask_period_msg = "When are you down to have some free food?"
 greeting = "Hi there! Let's cut to the chase. When are you down to have some free food?"
 longer_than_usual = "Give me 5 seconds! I'm looking up the events for you"
+cant_handle_request = "Sorry, I don't understand that"
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -99,8 +100,7 @@ def webhook():
                             print("#events {} days ahead".format(getdata.days_ahead), len(events_further_ahead))
                             respond(events_further_ahead, "{} days ahead".format(getdata.days_ahead), sender_id)
                     else:
-                        getdata.update_events_info()                        
-                        send_message(sender_id, "updated")
+                        send_message(sender_id, cant_handle_request)
                     
                     #after getting user's preference, keep asking again`
                     send_quick_reply_message(sender_id, ask_period_msg)
