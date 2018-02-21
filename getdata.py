@@ -169,4 +169,4 @@ def update_events_info():
 # print_events_info(events_further_ahead)
 
 #before pushing, execute below, then comment it out, then push to heroku
-update_events_info()
+# update_events_info()
